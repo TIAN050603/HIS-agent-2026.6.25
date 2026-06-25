@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+numpy
+requests
+
+# Qwen3-ASR is called through the OpenAI-compatible API.
+# No local model package is required in this service.

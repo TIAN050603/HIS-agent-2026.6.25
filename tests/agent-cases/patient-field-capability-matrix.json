@@ -1,0 +1,5475 @@
+{
+  "run_id": "patient-field-matrix-20260625T072223Z",
+  "generated_at": "2026-06-25T07:22:23.862Z",
+  "base_url": "http://10.26.6.8:31684",
+  "patient_count": 20,
+  "editable_editor_field_count": 25,
+  "total_candidate_cells": 500,
+  "fields": [
+    {
+      "field": "name",
+      "label": "姓名",
+      "type": "text",
+      "options_count": 0,
+      "aliases_count": 2
+    },
+    {
+      "field": "gender",
+      "label": "性别",
+      "type": "select",
+      "options_count": 3,
+      "aliases_count": 1
+    },
+    {
+      "field": "age",
+      "label": "年龄",
+      "type": "number",
+      "options_count": 0,
+      "aliases_count": 1
+    },
+    {
+      "field": "birthDate",
+      "label": "出生日期",
+      "type": "date",
+      "options_count": 0,
+      "aliases_count": 2
+    },
+    {
+      "field": "phone",
+      "label": "手机号",
+      "type": "text",
+      "options_count": 0,
+      "aliases_count": 6
+    },
+    {
+      "field": "idType",
+      "label": "证件类型",
+      "type": "select",
+      "options_count": 4,
+      "aliases_count": 1
+    },
+    {
+      "field": "idNumber",
+      "label": "证件号码",
+      "type": "text",
+      "options_count": 0,
+      "aliases_count": 2
+    },
+    {
+      "field": "address",
+      "label": "地址",
+      "type": "text",
+      "options_count": 0,
+      "aliases_count": 3
+    },
+    {
+      "field": "emergencyContact",
+      "label": "紧急联系人",
+      "type": "text",
+      "options_count": 0,
+      "aliases_count": 1
+    },
+    {
+      "field": "emergencyPhone",
+      "label": "紧急联系人电话",
+      "type": "text",
+      "options_count": 0,
+      "aliases_count": 2
+    },
+    {
+      "field": "insuranceType",
+      "label": "医保类型",
+      "type": "select",
+      "options_count": 5,
+      "aliases_count": 2
+    },
+    {
+      "field": "visitDate",
+      "label": "就诊日期",
+      "type": "date",
+      "options_count": 0,
+      "aliases_count": 1
+    },
+    {
+      "field": "department",
+      "label": "就诊科室",
+      "type": "select",
+      "options_count": 10,
+      "aliases_count": 2
+    },
+    {
+      "field": "doctor",
+      "label": "接诊医生",
+      "type": "text",
+      "options_count": 0,
+      "aliases_count": 2
+    },
+    {
+      "field": "visitType",
+      "label": "就诊类型",
+      "type": "select",
+      "options_count": 3,
+      "aliases_count": 1
+    },
+    {
+      "field": "visitStatus",
+      "label": "就诊状态",
+      "type": "select",
+      "options_count": 3,
+      "aliases_count": 1
+    },
+    {
+      "field": "chiefComplaint",
+      "label": "主诉",
+      "type": "textarea",
+      "options_count": 0,
+      "aliases_count": 2
+    },
+    {
+      "field": "presentIllness",
+      "label": "现病史",
+      "type": "textarea",
+      "options_count": 0,
+      "aliases_count": 2
+    },
+    {
+      "field": "pastHistory",
+      "label": "既往史",
+      "type": "textarea",
+      "options_count": 0,
+      "aliases_count": 8
+    },
+    {
+      "field": "allergyHistory",
+      "label": "过敏史",
+      "type": "textarea",
+      "options_count": 0,
+      "aliases_count": 2
+    },
+    {
+      "field": "vitalSigns",
+      "label": "生命体征",
+      "type": "textarea",
+      "options_count": 0,
+      "aliases_count": 2
+    },
+    {
+      "field": "diagnosis",
+      "label": "诊断",
+      "type": "textarea",
+      "options_count": 0,
+      "aliases_count": 1
+    },
+    {
+      "field": "examSummary",
+      "label": "检查检验",
+      "type": "textarea",
+      "options_count": 0,
+      "aliases_count": 3
+    },
+    {
+      "field": "orders",
+      "label": "医嘱/处方",
+      "type": "textarea",
+      "options_count": 0,
+      "aliases_count": 2
+    },
+    {
+      "field": "note",
+      "label": "备注",
+      "type": "textarea",
+      "options_count": 0,
+      "aliases_count": 2
+    }
+  ],
+  "readonly_or_hidden_fields": [
+    {
+      "field": "patientId",
+      "label": "就诊人ID",
+      "editable": false,
+      "showInEditor": true
+    },
+    {
+      "field": "encounterId",
+      "label": "就诊ID",
+      "editable": false,
+      "showInEditor": true
+    },
+    {
+      "field": "medicalHistory",
+      "label": "既往病史",
+      "editable": false,
+      "showInEditor": false
+    }
+  ],
+  "controls": {
+    "patientId": {
+      "exists": true,
+      "tag": "input",
+      "disabled": true
+    },
+    "name": {
+      "exists": true,
+      "tag": "input",
+      "disabled": false
+    },
+    "gender": {
+      "exists": true,
+      "tag": "select",
+      "disabled": false
+    },
+    "age": {
+      "exists": true,
+      "tag": "input",
+      "disabled": false
+    },
+    "birthDate": {
+      "exists": true,
+      "tag": "input",
+      "disabled": false
+    },
+    "phone": {
+      "exists": true,
+      "tag": "input",
+      "disabled": false
+    },
+    "idType": {
+      "exists": true,
+      "tag": "select",
+      "disabled": false
+    },
+    "idNumber": {
+      "exists": true,
+      "tag": "input",
+      "disabled": false
+    },
+    "address": {
+      "exists": true,
+      "tag": "input",
+      "disabled": false
+    },
+    "emergencyContact": {
+      "exists": true,
+      "tag": "input",
+      "disabled": false
+    },
+    "emergencyPhone": {
+      "exists": true,
+      "tag": "input",
+      "disabled": false
+    },
+    "insuranceType": {
+      "exists": true,
+      "tag": "select",
+      "disabled": false
+    },
+    "encounterId": {
+      "exists": true,
+      "tag": "input",
+      "disabled": true
+    },
+    "visitDate": {
+      "exists": true,
+      "tag": "input",
+      "disabled": false
+    },
+    "department": {
+      "exists": true,
+      "tag": "select",
+      "disabled": false
+    },
+    "doctor": {
+      "exists": true,
+      "tag": "input",
+      "disabled": false
+    },
+    "visitType": {
+      "exists": true,
+      "tag": "select",
+      "disabled": false
+    },
+    "visitStatus": {
+      "exists": true,
+      "tag": "select",
+      "disabled": false
+    },
+    "chiefComplaint": {
+      "exists": true,
+      "tag": "textarea",
+      "disabled": false
+    },
+    "presentIllness": {
+      "exists": true,
+      "tag": "textarea",
+      "disabled": false
+    },
+    "pastHistory": {
+      "exists": true,
+      "tag": "textarea",
+      "disabled": false
+    },
+    "allergyHistory": {
+      "exists": true,
+      "tag": "textarea",
+      "disabled": false
+    },
+    "vitalSigns": {
+      "exists": true,
+      "tag": "textarea",
+      "disabled": false
+    },
+    "diagnosis": {
+      "exists": true,
+      "tag": "textarea",
+      "disabled": false
+    },
+    "examSummary": {
+      "exists": true,
+      "tag": "textarea",
+      "disabled": false
+    },
+    "orders": {
+      "exists": true,
+      "tag": "textarea",
+      "disabled": false
+    },
+    "note": {
+      "exists": true,
+      "tag": "textarea",
+      "disabled": false
+    }
+  },
+  "matrix": [
+    {
+      "patientId": "P001",
+      "name": "张伟",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P001-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "女",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "39",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000001",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P001-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P001-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P001-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000001",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城乡居民医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "消化内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P001-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "复诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P001-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P001-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P001-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P001-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P001-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P001-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P001-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P001-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P001-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P002",
+      "name": "李娜",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P002-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "男",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "30",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000002",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P002-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P002-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P002-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000002",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城镇职工医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P002-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "初诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P002-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P002-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P002-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P002-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P002-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P002-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P002-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P002-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P002-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P003",
+      "name": "王强",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P003-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "女",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "46",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000003",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P003-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P003-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P003-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000003",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城镇职工医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P003-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "复诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "就诊中",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P003-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P003-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P003-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P003-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P003-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P003-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P003-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P003-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P003-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P004",
+      "name": "陈敏",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P004-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "男",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "35",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000004",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P004-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P004-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P004-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000004",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城镇职工医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P004-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "复诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P004-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P004-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P004-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P004-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P004-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P004-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P004-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P004-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P004-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P005",
+      "name": "赵磊",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P005-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "女",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "53",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000005",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P005-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P005-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P005-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000005",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城乡居民医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P005-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "初诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P005-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P005-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P005-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P005-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P005-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P005-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P005-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P005-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P005-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P006",
+      "name": "刘洋",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P006-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "女",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "32",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000006",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P006-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P006-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P006-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000006",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城乡居民医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P006-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "复诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P006-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P006-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P006-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P006-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P006-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P006-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P006-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P006-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P006-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P007",
+      "name": "孙芳",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P007-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "男",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "42",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000007",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P007-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P007-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P007-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000007",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城镇职工医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P007-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "初诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P007-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P007-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P007-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P007-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P007-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P007-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P007-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P007-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P007-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P008",
+      "name": "周杰",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P008-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "女",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "28",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000008",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P008-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P008-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P008-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000008",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城镇职工医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P008-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "复诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "就诊中",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P008-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P008-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P008-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P008-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P008-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P008-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P008-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P008-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P008-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P009",
+      "name": "吴敏",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P009-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "男",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "37",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000009",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P009-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P009-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P009-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000009",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城乡居民医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P009-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "复诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P009-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P009-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P009-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P009-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P009-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P009-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P009-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P009-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P009-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P010",
+      "name": "郑强",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P010-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "女",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "59",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000010",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P010-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P010-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P010-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000010",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城乡居民医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "消化内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P010-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "初诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P010-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P010-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P010-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P010-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P010-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P010-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P010-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P010-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P010-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P011",
+      "name": "马丽",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P011-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "男",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "25",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000011",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P011-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P011-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P011-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000011",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城镇职工医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P011-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "复诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "就诊中",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P011-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P011-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P011-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P011-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P011-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P011-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P011-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P011-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P011-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P012",
+      "name": "胡斌",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P012-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "女",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "50",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000012",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P012-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P012-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P012-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000012",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城镇职工医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P012-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "复诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P012-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P012-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P012-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P012-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P012-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P012-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P012-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P012-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P012-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P013",
+      "name": "郭静",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P013-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "男",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "34",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000013",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P013-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P013-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P013-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000013",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城镇职工医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P013-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "初诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P013-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P013-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P013-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P013-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P013-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P013-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P013-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P013-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P013-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P014",
+      "name": "何伟",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P014-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "女",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "63",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000014",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P014-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P014-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P014-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000014",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城乡居民医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P014-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "初诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P014-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P014-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P014-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P014-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P014-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P014-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P014-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P014-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P014-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P015",
+      "name": "高倩",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P015-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "男",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "31",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000015",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P015-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P015-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P015-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000015",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城镇职工医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P015-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "复诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P015-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P015-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P015-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P015-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P015-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P015-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P015-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P015-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P015-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P016",
+      "name": "梁峰",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P016-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "女",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "41",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000016",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P016-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P016-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P016-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000016",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城镇职工医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P016-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "复诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P016-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P016-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P016-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P016-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P016-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P016-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P016-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P016-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P016-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P017",
+      "name": "宋佳",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P017-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "男",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "48",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000017",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P017-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P017-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P017-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000017",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城镇职工医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P017-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "初诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "就诊中",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P017-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P017-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P017-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P017-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P017-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P017-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P017-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P017-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P017-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P018",
+      "name": "潘宇",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P018-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "女",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "23",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000018",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P018-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P018-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P018-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000018",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城镇职工医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P018-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "复诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P018-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P018-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P018-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P018-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P018-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P018-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P018-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P018-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P018-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P019",
+      "name": "杜娟",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P019-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "男",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "56",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000019",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P019-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P019-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P019-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000019",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城乡居民医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P019-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "初诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "待就诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P019-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P019-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P019-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P019-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P019-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P019-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P019-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P019-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P019-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    },
+    {
+      "patientId": "P020",
+      "name": "袁浩",
+      "fields": [
+        {
+          "field": "name",
+          "label": "姓名",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P020-name",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "gender",
+          "label": "性别",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "女",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "age",
+          "label": "年龄",
+          "type": "number",
+          "original_value_present": true,
+          "target_value": "38",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "birthDate",
+          "label": "出生日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "phone",
+          "label": "手机号",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000020",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idType",
+          "label": "证件类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "护照",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "idNumber",
+          "label": "证件号码",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P020-idNumber",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "address",
+          "label": "地址",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P020-address",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyContact",
+          "label": "紧急联系人",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P020-emergencyContact",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "emergencyPhone",
+          "label": "紧急联系人电话",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "13900000020",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "insuranceType",
+          "label": "医保类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "城乡居民医保",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitDate",
+          "label": "就诊日期",
+          "type": "date",
+          "original_value_present": true,
+          "target_value": "2026-01-02",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "department",
+          "label": "就诊科室",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "呼吸内科",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "doctor",
+          "label": "接诊医生",
+          "type": "text",
+          "original_value_present": true,
+          "target_value": "LoopTest-P020-doctor",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitType",
+          "label": "就诊类型",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "复诊",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "visitStatus",
+          "label": "就诊状态",
+          "type": "select",
+          "original_value_present": true,
+          "target_value": "就诊中",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "chiefComplaint",
+          "label": "主诉",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P020-chiefComplaint",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "presentIllness",
+          "label": "现病史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P020-presentIllness",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "pastHistory",
+          "label": "既往史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P020-pastHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "allergyHistory",
+          "label": "过敏史",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P020-allergyHistory",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "vitalSigns",
+          "label": "生命体征",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P020-vitalSigns",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "diagnosis",
+          "label": "诊断",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P020-diagnosis",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "examSummary",
+          "label": "检查检验",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P020-examSummary",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "orders",
+          "label": "医嘱/处方",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P020-orders",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        },
+        {
+          "field": "note",
+          "label": "备注",
+          "type": "textarea",
+          "original_value_present": true,
+          "target_value": "LoopTest-P020-note",
+          "editor_control_exists": true,
+          "editor_control_enabled": true,
+          "status": "covered_by_schema_and_editor"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "generated_only": true,
+    "full_mutation_execution": false,
+    "reason": "baseline/evaluate do not execute all patient x field mutations without explicit RUN_AGENT_LOOP_MUTATIONS=1"
+  },
+  "hard_gates": {
+    "all_demo_patients_discovered": true,
+    "all_editable_editor_fields_have_controls": true,
+    "full_patient_field_execution_complete": false
+  },
+  "status": "matrix_generated"
+}

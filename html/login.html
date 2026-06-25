@@ -1,0 +1,463 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>医院信息系统 HIS Demo 登录</title>
+  <link rel="stylesheet" href="../shared/agent-widget.css?v=20260623-agent-v2-matrix" />
+  <style>
+    :root {
+      --bg: #eef5fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #64748b;
+      --line: #cbddec;
+      --primary: #1d4ed8;
+      --primary-dark: #1e40af;
+      --accent: #0891b2;
+      --danger: #b42318;
+      --success: #047857;
+      --shadow: 0 18px 42px rgba(15, 23, 42, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #e8f4ff 0%, #f7fbff 48%, #edf7f5 100%);
+      color: var(--text);
+      font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
+    }
+
+    .his-login-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .his-login-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      padding: 18px 32px;
+      border-bottom: 1px solid #bfdbfe;
+      background: #ffffff;
+    }
+
+    .brand-title {
+      margin: 0;
+      color: #12335f;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand-meta {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .system-badge {
+      padding: 6px 10px;
+      border: 1px solid #bae6fd;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #075985;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .his-login-main {
+      display: grid;
+      grid-template-columns: minmax(280px, 520px) minmax(260px, 480px);
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 40px 0;
+    }
+
+    .login-copy h2 {
+      margin: 0 0 12px;
+      color: #12335f;
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .login-copy p {
+      margin: 0;
+      color: #475569;
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .metric {
+      min-height: 82px;
+      padding: 13px;
+      border: 1px solid #dbeafe;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--primary-dark);
+      font-size: 22px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .login-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .login-panel-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: #f3f8ff;
+    }
+
+    .login-panel-header h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #12335f;
+    }
+
+    .login-form {
+      display: grid;
+      gap: 16px;
+      padding: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: #243041;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font: inherit;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.14);
+    }
+
+    .demo-notice {
+      padding: 12px;
+      border: 1px solid #fed7aa;
+      border-radius: 8px;
+      background: #fff7ed;
+      color: #7c2d12;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .login-message {
+      display: none;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .login-message.show {
+      display: block;
+    }
+
+    .login-message.error {
+      border: 1px solid #fda29b;
+      background: #fff1f0;
+      color: var(--danger);
+    }
+
+    .login-message.success {
+      border: 1px solid #86efac;
+      background: #ecfdf3;
+      color: var(--success);
+    }
+
+    .login-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      min-height: 42px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 9px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      border-color: #cbd5e1;
+      color: #1f2937;
+    }
+
+    .his-login-footer {
+      padding: 12px 32px;
+      border-top: 1px solid #dbeafe;
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 860px) {
+      .his-login-main {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .metric-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body data-page-type="login">
+  <div class="his-login-shell">
+    <header class="his-login-header">
+      <div>
+        <h1 class="brand-title">医院信息系统 HIS Demo</h1>
+        <p class="brand-meta">门诊工作台 / 病历编辑 / Agent 原型演示</p>
+      </div>
+      <div class="system-badge">Demo 环境</div>
+    </header>
+
+    <main class="his-login-main">
+      <section class="login-copy" aria-labelledby="loginHeroTitle">
+        <h2 id="loginHeroTitle">医院信息系统入口</h2>
+        <p>面向门诊业务的简化 HIS 工作台原型，保留当前患者编辑与 Universal Observe-Act Agent 演示能力。</p>
+        <div class="metric-row" aria-label="系统概览">
+          <div class="metric"><strong>3</strong><span>核心页面</span></div>
+          <div class="metric"><strong>2</strong><span>医生/患者角色</span></div>
+          <div class="metric"><strong>1</strong><span>全站悬浮 Agent</span></div>
+        </div>
+      </section>
+
+      <section class="login-panel" aria-labelledby="loginFormTitle">
+        <div class="login-panel-header">
+          <h2 id="loginFormTitle">用户登录</h2>
+        </div>
+        <form class="login-form" id="loginForm" novalidate>
+          <div class="demo-notice">
+            当前为 Demo 登录，仅用于原型演示。默认账号：123，默认密码：123。后续版本需要接入后端鉴权。
+          </div>
+          <div id="loginMessage" class="login-message" role="status" aria-live="polite"></div>
+          <div>
+            <label for="loginAccountInput">账号</label>
+            <input id="loginAccountInput" name="account" data-agent-field="account" type="text" value="123" autocomplete="username" />
+          </div>
+          <div>
+            <label for="loginPasswordInput">密码</label>
+            <input id="loginPasswordInput" name="password" data-agent-field="password" type="password" value="123" autocomplete="current-password" />
+          </div>
+          <div class="login-actions">
+            <button type="submit" id="loginButton" class="btn-primary" data-agent-action="submit-login">登录系统</button>
+            <button type="button" id="resetLoginButton" class="btn-secondary">恢复默认账号</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="his-login-footer">当前页面为原型演示入口，不代表真实医疗生产系统。</footer>
+  </div>
+
+  <script src="../shared/runtime-config.js?v=20260625-ports"></script>
+  <script src="../shared/patient-field-schema.js?v=20260621-voice-plan"></script>
+  <script src="../shared/patient-store.js?v=20260621-voice-plan"></script>
+  <script src="../shared/voice-input-controller.js?v=20260621-voice-plan"></script>
+  <script src="../shared/ui-action-feedback.js?v=20260622-history-auth-feedback"></script>
+  <script src="../shared/agent-state-machine.js?v=20260622-agent-v2"></script>
+  <script src="../shared/agent-input-router.js?v=20260625-input-router"></script>
+  <script src="../shared/agent-scroll-manager.js?v=20260622-agent-v2"></script>
+  <script src="../shared/agent-task-model.js?v=20260622-agent-v2"></script>
+  <script src="../shared/agent-flow-trace.js?v=20260623-agent-v2-matrix"></script>
+  <script src="../shared/generic-browser-agent.js?v=20260624-gui-observe-action"></script>
+  <script src="../shared/agent-task-orchestrator.js?v=20260625-loop-gate"></script>
+  <script src="../shared/agent-widget-bootstrap.js?v=20260621-voice-plan"></script>
+  <script src="../shared/agent-widget.js?v=20260623-agent-v2-matrix"></script>
+  <script>
+    (function () {
+      "use strict";
+
+        const accountInput = document.getElementById("loginAccountInput");
+        const passwordInput = document.getElementById("loginPasswordInput");
+        const message = document.getElementById("loginMessage");
+        window.localStorage.setItem("hisDemoAuthenticated", "false");
+
+        document.getElementById("loginForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+        submitDemoLogin();
+      });
+
+      document.getElementById("resetLoginButton").addEventListener("click", function () {
+        accountInput.value = "123";
+        passwordInput.value = "123";
+        showMessage("已恢复 Demo 默认账号。", "success");
+      });
+
+        async function submitDemoLogin() {
+          // TODO: 当前登录只是 demo 登录，后续需要接入后端鉴权服务并替换本地判断。
+          if (accountInput.value === "123" && passwordInput.value === "123") {
+            showMessage("登录成功，正在进入 HIS 工作台。", "success");
+            window.localStorage.setItem("hisDemoAuthenticated", "true");
+            window.localStorage.setItem("hisDemoAuthenticatedAt", new Date().toISOString());
+            if (window.HisUiActionFeedback) {
+              await window.HisUiActionFeedback.agentClickElement(document.getElementById("loginButton"), {
+                click: false,
+                message: "Agent 正在登录 HIS Demo",
+                afterMs: 120
+              });
+            }
+            window.setTimeout(function () {
+              window.location.href = "dashboard.html";
+            }, 180);
+          return { handled: true, success: true, message: "Demo 登录成功，正在进入 HIS 工作台。" };
+        }
+        showMessage("账号或密码错误。Demo 默认账号和密码均为 123。", "error");
+        return { handled: true, success: false, message: "账号或密码错误。" };
+      }
+
+      function showMessage(text, type) {
+        message.textContent = text;
+        message.className = "login-message show " + type;
+      }
+
+      async function ensureInputValue(input, value, label) {
+        const next = String(value || "");
+        if (input.value === next) return false;
+        if (window.HisUiActionFeedback) await window.HisUiActionFeedback.agentClearAndType(input, next, { label: label });
+        else input.value = next;
+        return true;
+      }
+
+        window.collectHisPageState = function () {
+          const accountMatchesDemo = accountInput.value === "123";
+          const passwordMatchesDemo = passwordInput.value === "123";
+          return {
+            pageType: "login",
+            isLoginPage: true,
+            isInHisContext: false,
+            hisDemoAuthenticated: false,
+            loginState: {
+              usernameValue: accountInput.value,
+              passwordFilled: Boolean(passwordInput.value),
+              accountMatchesDemo: accountMatchesDemo,
+              passwordMatchesDemo: passwordMatchesDemo,
+              formReadyForDemoLogin: accountMatchesDemo && passwordMatchesDemo,
+              isDemoLoggedIn: false,
+              authenticated: false,
+              isInHisContext: false
+            },
+          formFields: {
+            account: { selector: "#loginAccountInput", value: accountInput.value },
+            password: { selector: "#loginPasswordInput", value: passwordInput.value ? "***" : "" }
+          },
+          demoAuth: {
+            account: "123",
+            password: "123",
+            noticeVisible: true,
+            note: "当前为 Demo 登录，仅用于原型演示；后续需要接入后端鉴权。"
+          }
+        };
+      };
+
+      window.applyHisAgentAction = async function (action) {
+        if (!action || !action.type) {
+          return { handled: false };
+        }
+            if (action.type === "fill_login_form") {
+              const args = action.args || action.value || {};
+              const hasAccount = Object.prototype.hasOwnProperty.call(args, "username") || Object.prototype.hasOwnProperty.call(args, "account");
+              const hasPassword = Object.prototype.hasOwnProperty.call(args, "password");
+              if (!hasAccount || !hasPassword) {
+                showMessage("缺少账号或密码，未自动使用 Demo 默认账号。", "error");
+                return { handled: true, success: false, message: "缺少账号或密码。" };
+              }
+              const accountChanged = await ensureInputValue(accountInput, String(args.username !== undefined ? args.username : args.account), "登录账号");
+              const passwordChanged = await ensureInputValue(passwordInput, String(args.password), "登录密码");
+              showMessage(accountChanged || passwordChanged ? "已填写登录表单。" : "登录表单已填写正确。", "success");
+          return { handled: true, success: true, message: accountChanged || passwordChanged ? "已填写登录表单。" : "登录表单已填写正确，未重复输入。" };
+        }
+        if (action.type === "submit_login") {
+            const loginButton = document.getElementById("loginButton");
+            if (!loginButton) {
+              return { handled: true, success: false, message: "未找到登录按钮。" };
+            }
+            if (window.HisUiActionFeedback) {
+              await window.HisUiActionFeedback.agentClickElement(loginButton, {
+                click: true,
+                message: "Agent 点击登录按钮",
+                afterMs: 120
+              });
+            } else {
+              loginButton.click();
+            }
+            return { handled: true, success: true, dispatched: true, clickedElement: "#loginButton", message: "已点击登录按钮。" };
+          }
+        if (action.type === "fill_input") {
+            const selector = action.target && action.target.selector;
+              if (selector === "#loginAccountInput") {
+                await ensureInputValue(accountInput, action.value || "", "登录账号");
+                return { handled: true, success: true, message: "已填写登录账号。" };
+              }
+              if (selector === "#loginPasswordInput") {
+                await ensureInputValue(passwordInput, action.value || "", "登录密码");
+                return { handled: true, success: true, message: "已填写登录密码。" };
+            }
+          }
+        if (action.type === "click" && action.target && action.target.selector === "#loginButton") {
+          return await submitDemoLogin();
+        }
+        return { handled: false };
+      };
+    })();
+  </script>
+</body>
+</html>

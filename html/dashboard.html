@@ -1,0 +1,459 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HIS 工作台</title>
+  <link rel="stylesheet" href="../shared/agent-widget.css?v=20260623-agent-v2-matrix" />
+  <style>
+    :root {
+      --bg: #f2f7fb;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #64748b;
+      --line: #d8e1ee;
+      --primary: #1d4ed8;
+      --primary-dark: #1e40af;
+      --cyan: #0891b2;
+      --green: #047857;
+      --amber: #b45309;
+      --shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif;
+    }
+
+    .his-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 236px 1fr;
+      grid-template-rows: 64px 1fr;
+      grid-template-areas:
+        "sidebar topbar"
+        "sidebar main";
+    }
+
+    .sidebar {
+      grid-area: sidebar;
+      background: #12335f;
+      color: #ffffff;
+      padding: 18px 14px;
+    }
+
+    .sidebar h1 {
+      margin: 0 0 18px;
+      padding: 0 8px;
+      font-size: 19px;
+      line-height: 1.3;
+      letter-spacing: 0;
+    }
+
+    .nav-group {
+      display: grid;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .nav-item {
+      display: block;
+      min-height: 40px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      color: #dbeafe;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .nav-item.active,
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+    }
+
+    .topbar {
+      grid-area: topbar;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .topbar-title {
+      margin: 0;
+      font-size: 20px;
+      color: #12335f;
+    }
+
+      .operator-info {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+    .main {
+      grid-area: main;
+      padding: 22px 24px 36px;
+    }
+
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .summary-card,
+    .module-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .summary-card {
+      min-height: 90px;
+      padding: 16px;
+    }
+
+    .summary-card strong {
+      display: block;
+      color: var(--primary-dark);
+      font-size: 26px;
+      line-height: 1.1;
+    }
+
+    .summary-card span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .workspace-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin: 4px 0 14px;
+    }
+
+    .workspace-head h2 {
+      margin: 0;
+      font-size: 22px;
+      color: #12335f;
+    }
+
+    .workspace-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .module-card {
+      display: grid;
+      gap: 12px;
+      min-height: 176px;
+      padding: 18px;
+    }
+
+    .module-card h3 {
+      margin: 0;
+      color: #12335f;
+      font-size: 17px;
+    }
+
+    .module-card p {
+      margin: 0;
+      color: #475569;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .module-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .module-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #075985;
+      font-weight: 700;
+    }
+
+    .module-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    button,
+    .button-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 8px 13px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      border-color: #cbd5e1;
+      background: #ffffff;
+      color: #1f2937;
+    }
+
+    .placeholder-panel {
+      margin-top: 18px;
+      border: 1px solid #dbeafe;
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 16px;
+      color: #475569;
+    }
+
+    @media (max-width: 980px) {
+      .his-shell {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto 1fr;
+        grid-template-areas:
+          "topbar"
+          "sidebar"
+          "main";
+      }
+
+      .sidebar {
+        padding: 12px;
+      }
+
+      .nav-group {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .summary-strip,
+      .module-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body data-page-type="dashboard">
+  <div class="his-shell">
+    <aside class="sidebar" aria-label="HIS 工作台导航">
+      <h1>医院信息系统 HIS Demo</h1>
+      <nav class="nav-group">
+        <a class="nav-item active" href="dashboard.html">门诊工作台</a>
+        <a class="nav-item" href="patient-management.html" data-his-entry="patient-management">患者管理</a>
+        <a class="nav-item" href="patient-editor.html" data-his-entry="patient-editor">病历编辑</a>
+        <a class="nav-item" href="agent-history.html" data-his-entry="agent-history">修改历史</a>
+        <a class="nav-item" href="#settings">系统设置</a>
+      </nav>
+    </aside>
+
+    <header class="topbar">
+      <h2 class="topbar-title">HIS 工作台</h2>
+      <div class="topbar-actions">
+        <div class="operator-info">演示医生 / 门诊综合科</div>
+        <button type="button" class="button-link btn-secondary" id="logoutButton">退出登录</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="summary-strip" aria-label="工作台概览">
+        <div class="summary-card"><strong>20</strong><span>Demo 患者</span></div>
+        <div class="summary-card"><strong>8</strong><span>今日待处理</span></div>
+        <div class="summary-card"><strong>4</strong><span>核心页面</span></div>
+        <div class="summary-card"><strong>1</strong><span>悬浮 Agent</span></div>
+      </section>
+
+      <section aria-labelledby="workspaceTitle">
+        <div class="workspace-head"><div><h2 id="workspaceTitle">门诊工作区</h2><p>选择患者、进入病历编辑，或使用悬浮 Agent 辅助操作。</p></div></div>
+        <div class="module-grid">
+          <article class="module-card" id="patient-management">
+            <div class="module-meta"><span class="module-pill">门诊</span><span>患者列表</span></div>
+            <h3>患者管理</h3>
+            <p>查看 20 个 Demo 患者，支持搜索、筛选和进入当前患者编辑页。</p>
+            <div class="module-actions"><a id="patientManagementEntry" class="button-link btn-primary" href="patient-management.html" data-his-entry="patient-management">打开患者管理</a></div>
+          </article>
+          <article class="module-card">
+            <div class="module-meta"><span class="module-pill">病历</span><span>编辑 Demo</span></div>
+            <h3>问诊记录 / 病历编辑</h3>
+            <p>从患者管理进入会携带 patientId；也可直接打开空编辑页。</p>
+            <div class="module-actions"><a id="patientEditorEntry" class="button-link btn-secondary" href="patient-editor.html" data-his-entry="patient-editor">进入编辑页</a></div>
+          </article>
+          <article class="module-card"><div class="module-meta"><span class="module-pill">队列</span><span>待处理任务</span></div><h3>候诊队列</h3><p>展示后续可扩展的候诊、分诊和复诊提醒入口。</p><div class="module-actions"><button type="button" class="btn-secondary" data-placeholder-action>暂未开放</button></div></article>
+          <article class="module-card" id="agent-history">
+            <div class="module-meta"><span class="module-pill">Agent</span><span>修改审计</span></div>
+            <h3>修改历史 / Agent 执行记录</h3>
+            <p>查看悬浮 Agent 任务步骤、耗时、token、resolver、adapter 和 audit log 详情。</p>
+            <div class="module-actions"><a id="agentHistoryEntry" class="button-link btn-secondary" href="agent-history.html" data-his-entry="agent-history">打开执行记录</a></div>
+          </article>
+          <article class="module-card"><div class="module-meta"><span class="module-pill">医嘱</span><span>检查检验</span></div><h3>检查检验</h3><p>预留 LIS / PACS 集成和检查结果回填入口。</p><div class="module-actions"><button type="button" class="btn-secondary" data-placeholder-action>暂未开放</button></div></article>
+          <article class="module-card"><div class="module-meta"><span class="module-pill">随访</span><span>患者沟通</span></div><h3>随访管理</h3><p>预留随访计划、患者通知和健康宣教入口。</p><div class="module-actions"><button type="button" class="btn-secondary" data-placeholder-action>暂未开放</button></div></article>
+          <article class="module-card" id="settings"><div class="module-meta"><span class="module-pill">设置</span><span>系统配置</span></div><h3>系统设置</h3><p>预留账号、科室、模板和服务地址配置入口。</p><div class="module-actions"><button type="button" class="btn-secondary" data-placeholder-action>暂未开放</button></div></article>
+        </div>
+        <div class="placeholder-panel" id="dashboardMessage" role="status" aria-live="polite">请选择一个模块继续操作，也可以使用右下角悬浮 Agent。</div>
+      </section>
+    </main>
+  </div>
+
+  <script src="../shared/runtime-config.js?v=20260625-ports"></script>
+  <script src="../shared/patient-field-schema.js?v=20260621-voice-plan"></script>
+  <script src="../shared/patient-store.js?v=20260621-voice-plan"></script>
+  <script src="../shared/voice-input-controller.js?v=20260621-voice-plan"></script>
+  <script src="../shared/ui-action-feedback.js?v=20260622-history-auth-feedback"></script>
+  <script src="../shared/agent-state-machine.js?v=20260622-agent-v2"></script>
+  <script src="../shared/agent-input-router.js?v=20260625-input-router"></script>
+  <script src="../shared/agent-scroll-manager.js?v=20260622-agent-v2"></script>
+  <script src="../shared/agent-task-model.js?v=20260622-agent-v2"></script>
+  <script src="../shared/agent-flow-trace.js?v=20260623-agent-v2-matrix"></script>
+  <script src="../shared/generic-browser-agent.js?v=20260624-gui-observe-action"></script>
+  <script src="../shared/agent-task-orchestrator.js?v=20260625-loop-gate"></script>
+  <script src="../shared/agent-widget-bootstrap.js?v=20260621-voice-plan"></script>
+  <script src="../shared/agent-widget.js?v=20260623-agent-v2-matrix"></script>
+  <script>
+    (function () {
+      "use strict";
+
+        const message = document.getElementById("dashboardMessage");
+        const logoutButton = document.getElementById("logoutButton");
+        window.localStorage.setItem("hisDemoAuthenticated", "true");
+        if (!window.localStorage.getItem("hisDemoAuthenticatedAt")) {
+          window.localStorage.setItem("hisDemoAuthenticatedAt", new Date().toISOString());
+        }
+
+        document.querySelectorAll("[data-placeholder-action]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          message.textContent = "该模块当前为 HIS 原型占位，后续可继续接入真实业务能力。";
+        });
+        });
+
+        logoutButton.addEventListener("click", function () { logoutDemo(); });
+
+        async function navigateTo(url, target, message) {
+            if (window.HisUiActionFeedback && target) {
+              await window.HisUiActionFeedback.agentClickElement(target, {
+                click: false,
+                message: message || "Agent 正在打开页面",
+                afterMs: 110
+              });
+            }
+            window.setTimeout(function () {
+              window.location.href = url;
+            }, 170);
+          }
+
+        async function logoutDemo() {
+            window.localStorage.setItem("hisDemoAuthenticated", "false");
+            window.localStorage.removeItem("hisDemoAuthenticatedAt");
+            await navigateTo("login.html", logoutButton, "Agent 正在退出登录");
+            return { handled: true, success: true, message: "已退出 Demo 登录。" };
+          }
+
+        window.collectHisPageState = function () {
+          return {
+            pageType: "dashboard",
+            isLoginPage: false,
+            isInHisContext: true,
+            hisDemoAuthenticated: true,
+            loginState: {
+              authenticated: true,
+              isDemoLoggedIn: true,
+              isInHisContext: true,
+              operator: "演示医生"
+            },
+            modules: Array.from(document.querySelectorAll(".module-card")).map(function (card) {
+            return {
+              title: (card.querySelector("h3") || {}).textContent || "",
+              status: (card.querySelector(".module-pill") || {}).textContent || "",
+              entrySelector: card.querySelector("[data-his-entry]") ? "#" + card.querySelector("[data-his-entry]").id : ""
+            };
+          }),
+          navigation: [
+              { label: "门诊工作台", page: "dashboard" },
+              { label: "患者管理", page: "patientManagement", selector: "#patientManagementEntry" },
+              { label: "病历编辑", page: "patientEditor", selector: "#patientEditorEntry" },
+              { label: "退出登录", page: "login", selector: "#logoutButton" }
+            ]
+          };
+        };
+
+      window.applyHisAgentAction = async function (action) {
+        if (!action || !action.type) {
+          return { handled: false };
+        }
+          if (action.type === "open_page" || action.type === "navigate") {
+              const value = String((action.args && action.args.page) || action.value || (action.target && action.target.page) || "");
+              if (value === "patientManagement" || value === "patient-management.html") {
+              await navigateTo("patient-management.html", document.getElementById("patientManagementEntry"), "Agent 正在打开患者管理");
+                return { handled: true, success: true, message: "正在进入患者管理页面。" };
+              }
+              if (value === "patientEditor" || value === "patient-editor.html" || value === "index.html") {
+              await navigateTo("patient-editor.html", document.getElementById("patientEditorEntry"), "Agent 正在打开患者编辑");
+                return { handled: true, success: true, message: "正在进入患者编辑页面。" };
+              }
+            }
+            if (action.type === "logout" || (action.type === "click" && action.target && action.target.selector === "#logoutButton")) {
+              return await logoutDemo();
+            }
+          if (action.type === "click" && action.target && action.target.selector === "#patientManagementEntry") {
+            await navigateTo("patient-management.html", document.getElementById("patientManagementEntry"), "Agent 正在打开患者管理");
+              return { handled: true, success: true, message: "已点击患者管理入口。" };
+            }
+          if (action.type === "click" && action.target && action.target.selector === "#patientEditorEntry") {
+            await navigateTo("patient-editor.html", document.getElementById("patientEditorEntry"), "Agent 正在打开患者编辑");
+              return { handled: true, success: true, message: "已点击患者编辑入口。" };
+            }
+        return { handled: false };
+      };
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Loop Case Result",
+  "type": "object",
+  "required": ["case_id", "priority", "status", "started_at", "finished_at", "assertions"],
+  "properties": {
+    "case_id": { "type": "string" },
+    "priority": { "type": "string" },
+    "status": { "enum": ["passed", "failed", "skipped"] },
+    "started_at": { "type": "string" },
+    "finished_at": { "type": "string" },
+    "elapsed_ms": { "type": "number" },
+    "assertions": { "type": "array" },
+    "first_failure": { "type": ["object", "null"] },
+    "trace_file": { "type": ["string", "null"] },
+    "screenshot_file": { "type": ["string", "null"] },
+    "data_restored": { "type": "boolean" }
+  },
+  "additionalProperties": true
+}

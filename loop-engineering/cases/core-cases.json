@@ -1,0 +1,398 @@
+[
+  {
+    "case_id": "p0-runtime-health-baseline",
+    "priority": "P0",
+    "category": "runtime",
+    "title": "当前前端、后端、ASR、LLM、Diart 健康基线",
+    "startPage": "login",
+    "automation": "service_health",
+    "expected_postconditions": {
+      "frontend": "reachable",
+      "backend": "reachable",
+      "asr": "reachable",
+      "llm": "observed",
+      "diarization": "observed"
+    }
+  },
+  {
+    "case_id": "p0-login-invalid-username-manual",
+    "priority": "P0",
+    "category": "login",
+    "title": "错误账号 1234/123 手动登录失败",
+    "startPage": "login",
+    "automation": "login_invalid_manual",
+    "input": {
+      "username": "1234",
+      "password": "123"
+    },
+    "expected_postconditions": {
+      "page_type": "login",
+      "auth": false,
+      "error_message": "账号或密码错误",
+      "no_business_mutation": true
+    }
+  },
+  {
+    "case_id": "p0-login-invalid-username-agent",
+    "priority": "P0",
+    "category": "login",
+    "title": "错误账号 1234/123 Agent 登录也必须失败",
+    "startPage": "login",
+    "automation": "agent_login_invalid",
+    "input": "输入账户为1234，密码为123，然后登录",
+    "expected_postconditions": {
+      "page_type": "login",
+      "auth": false,
+      "task_status": "failed_or_waiting",
+      "no_business_mutation": true
+    }
+  },
+  {
+    "case_id": "p0-no-mutation-save-denied",
+    "priority": "P0",
+    "category": "mutation",
+    "title": "无 mutation 的 find/open/save 计划不得保存为 completed",
+    "startPage": "patient-management",
+    "automation": "no_mutation_save_denied",
+    "expected_postconditions": {
+      "task_status": "failed_or_waiting",
+      "no_business_mutation": true
+    }
+  },
+  {
+    "case_id": "p0-wrong-patient-protection",
+    "priority": "P0",
+    "category": "patient-context",
+    "title": "目标患者与 URL/DOM/pageState 不一致时禁止写操作",
+    "startPage": "patient-editor",
+    "automation": "wrong_patient_protection",
+    "expected_postconditions": {
+      "no_business_mutation": true,
+      "hard_failure_if_mutated": "wrong_patient_modified"
+    }
+  },
+  {
+    "case_id": "p0-no-llm-no-page-action",
+    "priority": "P0",
+    "category": "llm-gate",
+    "title": "无 LLM 时自然语言任务不得执行页面动作",
+    "startPage": "patient-editor",
+    "automation": "no_llm_no_action",
+    "input": "修改患者 P001 的手机号为 13800138000 并保存",
+    "expected_postconditions": {
+      "task_status": "blocked_no_llm",
+      "no_business_mutation": true,
+      "no_audit_log": true
+    }
+  },
+  {
+    "case_id": "p0-terminal-task-not-reanimated",
+    "priority": "P0",
+    "category": "task-lifecycle",
+    "title": "terminal task 完成后不得被 timer/progress/repair 复活",
+    "startPage": "login",
+    "automation": "terminal_task_not_reanimated",
+    "expected_postconditions": {
+      "active_task_terminal_or_empty": true,
+      "no_running_task": true
+    }
+  },
+  {
+    "case_id": "p0-data-snapshot-restore",
+    "priority": "P0",
+    "category": "data-restore",
+    "title": "mutation 测试前后必须快照并恢复 Demo 数据",
+    "startPage": "login",
+    "automation": "snapshot_restore_self_check",
+    "expected_postconditions": {
+      "data_restored": true
+    }
+  },
+  {
+    "case_id": "p1-login-valid-manual",
+    "priority": "P1",
+    "category": "login",
+    "title": "正确账号 123/123 手动登录成功",
+    "startPage": "login",
+    "automation": "login_valid_manual",
+    "input": {
+      "username": "123",
+      "password": "123"
+    },
+    "expected_postconditions": {
+      "page_type": "dashboard",
+      "auth": true
+    }
+  },
+  {
+    "case_id": "p1-agent-login-valid",
+    "priority": "P1",
+    "category": "login",
+    "title": "Agent 使用正确账号登录成功",
+    "startPage": "login",
+    "automation": "agent_login_valid",
+    "input": "输入账户为123，密码为123，然后登录",
+    "expected_postconditions": {
+      "page_type": "dashboard",
+      "auth": true
+    }
+  },
+  {
+    "case_id": "p1-update-p001-phone",
+    "priority": "P1",
+    "category": "patient-mutation",
+    "title": "正确登录并修改 P001 手机号",
+    "startPage": "patient-management",
+    "automation": "agent_patient_field_mutation",
+    "mutation": {
+      "patientId": "P001",
+      "name": "张伟",
+      "updates": [
+        { "field": "phone", "value": "13800138000" }
+      ]
+    },
+    "input": "修改患者 P001 的手机号为 13800138000 并保存",
+    "expected_postconditions": {
+      "patient_id": "P001",
+      "field": "phone",
+      "value": "13800138000",
+      "audit_log": true,
+      "data_restored": true
+    }
+  },
+  {
+    "case_id": "p1-in-his-no-return-login",
+    "priority": "P1",
+    "category": "navigation",
+    "title": "已在 HIS 内执行任务不回 login",
+    "startPage": "patient-management",
+    "automation": "agent_patient_field_mutation",
+    "mutation": {
+      "patientId": "P002",
+      "name": "李娜",
+      "updates": [
+        { "field": "department", "value": "心血管内科" }
+      ]
+    },
+    "expected_postconditions": {
+      "page_type_not": "login"
+    }
+  },
+  {
+    "case_id": "p1-missing-patient-clarify",
+    "priority": "P1",
+    "category": "waiting-user",
+    "title": "不存在患者后回复其实应该是张伟，保持同一 taskId",
+    "startPage": "patient-management",
+    "automation": "agent_missing_patient_clarify",
+    "expected_postconditions": {
+      "same_task_id": true,
+      "canonical_patient_id": "P001"
+    }
+  },
+  {
+    "case_id": "p1-missing-field-clarify",
+    "priority": "P1",
+    "category": "waiting-user",
+    "title": "缺字段后回复手机号",
+    "startPage": "patient-management",
+    "automation": "agent_missing_field_clarify",
+    "expected_postconditions": {
+      "same_task_id": true,
+      "field": "phone"
+    }
+  },
+  {
+    "case_id": "p1-new-task-during-waiting-user",
+    "priority": "P1",
+    "category": "waiting-user",
+    "title": "waiting_user 下提出新任务时先询问是否取消旧任务",
+    "startPage": "patient-management",
+    "automation": "agent_new_task_during_waiting_user",
+    "expected_postconditions": {
+      "asks_cancel_old_task": true
+    }
+  },
+  {
+    "case_id": "p1-cancel-task-terminal",
+    "priority": "P1",
+    "category": "task-lifecycle",
+    "title": "取消任务后终止、停计时、不复活",
+    "startPage": "patient-management",
+    "automation": "agent_cancel_task_terminal",
+    "input": "我发错了，先不改",
+    "expected_postconditions": {
+      "task_status": "cancelled",
+      "timer_stopped": true
+    }
+  },
+  {
+    "case_id": "p1-refresh-restore-no-repeat",
+    "priority": "P1",
+    "category": "task-lifecycle",
+    "title": "页面刷新或导航后恢复，不重复已完成 action",
+    "startPage": "patient-management",
+    "automation": "agent_refresh_restore_no_repeat",
+    "expected_postconditions": {
+      "no_duplicate_completed_action": true
+    }
+  },
+  {
+    "case_id": "p1-multi-field-update",
+    "priority": "P1",
+    "category": "patient-mutation",
+    "title": "多字段修改每个 mutation 都必须 update/save/verify/audit",
+    "startPage": "patient-management",
+    "automation": "agent_patient_field_mutation",
+    "mutation": {
+      "patientId": "P008",
+      "name": "周杰",
+      "updates": [
+        { "field": "chiefComplaint", "value": "咽痛鼻塞三天，夜间加重。" },
+        { "field": "presentIllness", "value": "咽痛伴鼻塞三天，夜间鼻塞明显，无明显发热。" }
+      ]
+    },
+    "expected_postconditions": {
+      "all_mutations_verified": true,
+      "audit_log": true,
+      "data_restored": true
+    }
+  },
+  {
+    "case_id": "p1-date-and-select-update",
+    "priority": "P1",
+    "category": "patient-mutation",
+    "title": "日期和 select 字段修改",
+    "startPage": "patient-management",
+    "automation": "agent_patient_field_mutation",
+    "mutation": {
+      "patientId": "P003",
+      "name": "王强",
+      "updates": [
+        { "field": "birthDate", "value": "1982-04-15" },
+        { "field": "department", "value": "神经内科" }
+      ]
+    },
+    "expected_postconditions": {
+      "date_updated": true,
+      "select_updated": true,
+      "data_restored": true
+    }
+  },
+  {
+    "case_id": "p1-primary-voice-input-only",
+    "priority": "P1",
+    "category": "voice",
+    "title": "主语音只转写到输入框，不自动发送",
+    "startPage": "login",
+    "automation": "primary_voice_input_only",
+    "expected_postconditions": {
+      "input_filled": true,
+      "no_auto_send": true
+    }
+  },
+  {
+    "case_id": "p1-voice-session-review-before-execute",
+    "priority": "P1",
+    "category": "voice",
+    "title": "就诊会话整理可编辑任务，确认前不执行",
+    "startPage": "login",
+    "automation": "voice_session_review_before_execute",
+    "expected_postconditions": {
+      "editable_task_box": true,
+      "no_business_mutation_before_confirm": true
+    }
+  },
+  {
+    "case_id": "p1-diart-unavailable-manual",
+    "priority": "P1",
+    "category": "voice",
+    "title": "Diart 不可用时降级 manual，ASR 正常",
+    "startPage": "login",
+    "automation": "diart_unavailable_manual",
+    "expected_postconditions": {
+      "diart_mode": "manual",
+      "asr_usable": true
+    }
+  },
+  {
+    "case_id": "p2-latest-agent-message-visible",
+    "priority": "P2",
+    "category": "ui",
+    "title": "最新 Agent 消息自动可见",
+    "startPage": "login",
+    "automation": "latest_agent_message_visible",
+    "expected_postconditions": {
+      "latest_output_visible": true
+    }
+  },
+  {
+    "case_id": "p2-user-scroll-not-forced-bottom",
+    "priority": "P2",
+    "category": "ui",
+    "title": "用户上滚时不强制拉回底部",
+    "startPage": "login",
+    "automation": "user_scroll_not_forced_bottom",
+    "expected_postconditions": {
+      "scroll_preserved": true
+    }
+  },
+  {
+    "case_id": "p2-new-message-prompt",
+    "priority": "P2",
+    "category": "ui",
+    "title": "用户上滚时显示新消息提示",
+    "startPage": "login",
+    "automation": "new_message_prompt",
+    "expected_postconditions": {
+      "new_message_prompt_visible": true
+    }
+  },
+  {
+    "case_id": "p2-progress-does-not-steal-home-view",
+    "priority": "P2",
+    "category": "ui",
+    "title": "返回 homeView 后 progress 不抢回 chatView",
+    "startPage": "login",
+    "automation": "progress_does_not_steal_home_view",
+    "expected_postconditions": {
+      "view_state": "home"
+    }
+  },
+  {
+    "case_id": "p2-expanded-steps-not-reset",
+    "priority": "P2",
+    "category": "ui",
+    "title": "展开步骤状态不被 render 重置",
+    "startPage": "login",
+    "automation": "expanded_steps_not_reset",
+    "expected_postconditions": {
+      "steps_open": true,
+      "scroll_top_preserved": true
+    }
+  },
+  {
+    "case_id": "p2-input-draft-persist",
+    "priority": "P2",
+    "category": "ui",
+    "title": "输入草稿跨页面保留",
+    "startPage": "login",
+    "automation": "input_draft_persist",
+    "expected_postconditions": {
+      "draft_restored": true
+    }
+  },
+  {
+    "case_id": "p2-agent-history-rich-fields",
+    "priority": "P2",
+    "category": "history",
+    "title": "agent-history 显示耗时、token、audit",
+    "startPage": "agent-history",
+    "automation": "agent_history_rich_fields",
+    "expected_postconditions": {
+      "elapsed_visible": true,
+      "token_visible": true,
+      "audit_visible": true
+    }
+  }
+]

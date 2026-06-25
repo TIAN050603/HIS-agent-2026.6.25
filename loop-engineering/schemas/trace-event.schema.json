@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Loop Trace Event",
+  "type": "object",
+  "required": ["event_id", "iteration", "case_id", "run_id", "at", "event"],
+  "properties": {
+    "event_id": { "type": "string" },
+    "iteration": { "type": "integer", "minimum": 1 },
+    "case_id": { "type": "string" },
+    "task_id": { "type": "string" },
+    "run_id": { "type": "string" },
+    "at": { "type": "string" },
+    "event": { "type": "string" },
+    "conversation_state": { "type": "string" },
+    "input_route": { "type": "string" },
+    "page_type": { "type": "string" },
+    "url": { "type": "string" },
+    "action": { "type": "string" },
+    "step_id": { "type": "string" },
+    "expected": { "type": "object" },
+    "actual": { "type": "object" },
+    "task_slots": { "type": "object" },
+    "canonical_patient": { "type": "object" },
+    "page_patient": { "type": "object" },
+    "action_payload": { "type": "object" },
+    "action_result": { "type": "object" },
+    "postcondition": { "type": "object" },
+    "error": {}
+  },
+  "additionalProperties": true
+}

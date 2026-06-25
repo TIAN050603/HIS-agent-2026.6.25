@@ -1,0 +1,43 @@
+# Backend local secrets and envs
+backend/.env
+backend/.venv/
+backend/__pycache__/
+backend/.pytest_cache/
+backend/*.log
+backend/uvicorn*.log
+
+# ASR local secrets, envs, caches, logs
+asr_service/.env
+asr_service/.venv/
+asr_service/.venv-qwen/
+asr_service/**/__pycache__/
+asr_service/.pytest_cache/
+asr_service/*.log
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local scratch / cleanup artifacts
+cleanup_report.md
+/main_*
+/main*.py
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Local backup snapshots
+_backup_before_perf_optimization_20260604/
+
+# Diarization local secrets, envs, caches, logs
+diarization_service/.env
+diarization_service/.venv/
+diarization_service/.venv-diart/
+diarization_service/.venv-diart-cu/
+diarization_service/**/__pycache__/
+diarization_service/.pytest_cache/
+diarization_service/*.log

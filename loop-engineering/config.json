@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "artifactRoot": "loop-engineering/artifacts",
+  "caseFile": "loop-engineering/cases/core-cases.json",
+  "scoreRulesFile": "loop-engineering/score-rules.json",
+  "maxIterations": 6,
+  "defaultTimeoutMs": 10000,
+  "defaultBaseUrl": "http://10.26.6.8:31684",
+  "health": {
+    "frontendPath": "/html/login.html",
+    "backendUrl": "http://10.26.6.8:30663",
+    "asrUrl": "http://10.26.6.8:30410",
+    "llmUrl": "http://10.26.6.8:31756",
+    "diarizationUrl": "http://127.0.0.1:8020"
+  },
+  "storageKeys": [
+    "his_demo_patients_v2",
+    "his_demo_patients_v1",
+    "his_demo_patient_audit_v2",
+    "his_demo_patient_audit_v1",
+    "hisAgentActiveTask",
+    "hisAgentTaskHistory",
+    "hisAgentInputDraftV2",
+    "hisAgentConversationStateV2",
+    "hisAgentScrollRestoreV2",
+    "hisAgentTaskStepsUiV2",
+    "hisAgentFlowTrace",
+    "hisDemoAuthenticated",
+    "hisDemoAuthenticatedAt"
+  ],
+  "modes": {
+    "baseline": {
+      "runMutations": false,
+      "includePriorities": ["P0", "P1", "P2"]
+    },
+    "evaluate": {
+      "runMutations": false,
+      "includePriorities": ["P0", "P1", "P2"]
+    },
+    "smoke": {
+      "runMutations": false,
+      "includePriorities": ["P0"]
+    },
+    "full": {
+      "runMutations": true,
+      "includePriorities": ["P0", "P1", "P2"]
+    }
+  }
+}

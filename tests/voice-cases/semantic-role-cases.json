@@ -1,0 +1,62 @@
+[
+  {
+    "id": "vr-001",
+    "text": "哪里不舒服？",
+    "expected_role": "doctor",
+    "reason": "question_from_doctor"
+  },
+  {
+    "id": "vr-002",
+    "text": "我胸闷半天，活动后加重。",
+    "expected_role": "patient",
+    "reason": "symptom_answer"
+  },
+  {
+    "id": "vr-003",
+    "text": "把主诉写成胸闷半天，现病史补充活动后加重并保存。",
+    "expected_role": "doctor",
+    "reason": "page_action_instruction"
+  },
+  {
+    "id": "vr-004",
+    "text": "最近咳嗽两天，还有点低热。",
+    "expected_role": "patient",
+    "reason": "symptom_answer"
+  },
+  {
+    "id": "vr-005",
+    "text": "记录患者 P001 主诉为咳嗽两天伴低热。",
+    "expected_role": "doctor",
+    "reason": "record_instruction"
+  },
+  {
+    "id": "vr-006",
+    "text": "夜间更严重，白痰不多。",
+    "expected_role": "patient",
+    "reason": "symptom_answer"
+  },
+  {
+    "id": "vr-007",
+    "text": "先不要保存，等我确认。",
+    "expected_role": "doctor",
+    "reason": "workflow_instruction"
+  },
+  {
+    "id": "vr-008",
+    "text": "没有药物过敏。",
+    "expected_role": "patient",
+    "reason": "medical_history_answer"
+  },
+  {
+    "id": "vr-009",
+    "text": "一键交换医生患者标签后再整理。",
+    "expected_role": "doctor",
+    "reason": "ui_instruction"
+  },
+  {
+    "id": "vr-010",
+    "text": "我叫张伟，今年四十五岁。",
+    "expected_role": "patient",
+    "reason": "identity_answer"
+  }
+]

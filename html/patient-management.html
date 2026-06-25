@@ -1,0 +1,285 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>患者管理 - HIS Demo</title>
+  <link rel="stylesheet" href="../shared/agent-widget.css?v=20260623-agent-v2-matrix" />
+  <style>
+    :root { --bg:#f3f7fb; --panel:#fff; --text:#172033; --muted:#64748b; --line:#d8e1ee; --primary:#2754d8; --dark:#12335f; --success:#047857; --shadow:0 12px 28px rgba(15,23,42,.08); }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:"Microsoft YaHei","PingFang SC","Segoe UI",Arial,sans-serif; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; min-height:68px; padding:0 28px; background:#fff; border-bottom:1px solid var(--line); }
+    .topbar h1 { margin:0; color:var(--dark); font-size:24px; }
+    .topbar p { margin:3px 0 0; color:var(--muted); font-size:13px; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; }
+    .page { width:min(1320px, calc(100% - 32px)); margin:20px auto 44px; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; box-shadow:var(--shadow); overflow:hidden; }
+    .card-header { padding:16px 18px; background:#f8fbff; border-bottom:1px solid var(--line); }
+    .card-header h2 { margin:0; color:var(--dark); font-size:18px; }
+    .card-header p { margin:5px 0 0; color:var(--muted); font-size:13px; }
+    .toolbar { display:grid; grid-template-columns:minmax(220px,1fr) 220px auto; gap:12px; padding:16px 18px; border-bottom:1px solid var(--line); background:#fff; }
+    input, select { width:100%; min-height:40px; border:1px solid #cbd5e1; border-radius:6px; padding:8px 10px; font:inherit; }
+    button, .btn { display:inline-flex; align-items:center; justify-content:center; min-height:38px; border:1px solid transparent; border-radius:6px; padding:8px 13px; font:inherit; font-size:13px; font-weight:700; text-decoration:none; cursor:pointer; }
+    .btn-primary { background:var(--primary); color:#fff; }
+    .btn-secondary { background:#fff; border-color:#cbd5e1; color:#1f2937; }
+    .btn-danger { background:#fff1f0; border-color:#fda29b; color:#b42318; }
+    .sync-note { margin:0 0 14px; padding:11px 13px; border:1px solid #86efac; border-radius:8px; background:#ecfdf3; color:var(--success); font-weight:700; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th, td { padding:11px 10px; border-bottom:1px solid #e5edf6; text-align:left; vertical-align:top; }
+    th { background:#eaf1fb; color:#475569; white-space:nowrap; }
+    tbody tr:hover { background:#f8fbff; }
+    tbody tr.his-agent-row-flash { animation:hisAgentRowFlash 1.8s ease; }
+    @keyframes hisAgentRowFlash {
+      0% { background:#ecfdf3; box-shadow:inset 4px 0 0 #047857; }
+      70% { background:#f0fdf4; box-shadow:inset 4px 0 0 rgba(4,120,87,0); }
+      100% { background:transparent; box-shadow:none; }
+    }
+    .summary { max-width:260px; white-space:normal; }
+    .empty { padding:24px; color:var(--muted); }
+    .detail-row td { background:#f8fbff; padding:16px 18px; }
+    .detail-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .detail-item { border:1px solid var(--line); border-radius:8px; padding:10px; background:#fff; }
+    .detail-item strong { display:block; color:#334155; font-size:12px; margin-bottom:4px; }
+    .detail-item span { color:#0f172a; white-space:pre-wrap; }
+    .timestamp { color:var(--muted); font-size:12px; }
+    @media (max-width:860px) { .toolbar { grid-template-columns:1fr; } .topbar { align-items:flex-start; flex-direction:column; padding:16px; } .detail-grid { grid-template-columns:1fr; } table { min-width:900px; } .table-scroll { overflow:auto; } }
+  </style>
+</head>
+<body data-page-type="patientManagement">
+  <header class="topbar">
+    <div>
+      <h1>患者管理 HIS Demo</h1>
+      <p>门诊工作台 / 全量 Demo 患者 / 结构化字段 schema</p>
+    </div>
+    <nav class="actions" aria-label="页面操作">
+      <a class="btn btn-secondary" href="dashboard.html">返回工作台</a>
+      <button type="button" class="btn-secondary" id="resetPatientsButton">重置 Demo 数据</button>
+      <a class="btn btn-danger" href="login.html">退出登录</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <p class="sync-note" id="syncNote">当前使用 localStorage Demo 数据；手动操作不依赖 LLM，悬浮 Agent 执行动作必须来自后端 LLM。</p>
+    <section class="card" aria-labelledby="patientTableTitle">
+      <div class="card-header">
+        <h2 id="patientTableTitle">患者列表</h2>
+        <p id="patientCountMeta">常用字段直接展示，问诊病历长文本通过“查看详情”展开。</p>
+      </div>
+      <div class="toolbar">
+        <input id="patientSearchInput" type="search" placeholder="姓名 / patientId / 科室 / 手机号" aria-label="搜索患者" />
+        <select id="departmentFilter" aria-label="科室筛选"><option value="">全部科室</option></select>
+        <button type="button" class="btn-secondary" id="clearFiltersButton">清空筛选</button>
+      </div>
+      <div class="table-scroll">
+        <table aria-label="患者列表">
+          <thead>
+            <tr>
+              <th>患者ID</th><th>姓名</th><th>性别</th><th>年龄</th><th>手机号</th><th>科室</th><th>就诊状态</th><th>最近主诉</th><th>最后修改</th><th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="patientTableBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="emptyState" hidden>没有找到匹配患者。</div>
+    </section>
+  </main>
+
+  <script src="../shared/runtime-config.js?v=20260625-ports"></script>
+  <script src="../shared/patient-field-schema.js?v=20260621-voice-plan"></script>
+  <script src="../shared/patient-store.js?v=20260621-voice-plan"></script>
+  <script src="../shared/voice-input-controller.js?v=20260621-voice-plan"></script>
+  <script src="../shared/ui-action-feedback.js?v=20260622-history-auth-feedback"></script>
+  <script src="../shared/agent-state-machine.js?v=20260622-agent-v2"></script>
+  <script src="../shared/agent-input-router.js?v=20260625-input-router"></script>
+  <script src="../shared/agent-scroll-manager.js?v=20260622-agent-v2"></script>
+  <script src="../shared/agent-task-model.js?v=20260622-agent-v2"></script>
+  <script src="../shared/agent-flow-trace.js?v=20260623-agent-v2-matrix"></script>
+  <script src="../shared/generic-browser-agent.js?v=20260624-gui-observe-action"></script>
+  <script src="../shared/agent-task-orchestrator.js?v=20260625-loop-gate"></script>
+  <script src="../shared/agent-widget-bootstrap.js?v=20260621-voice-plan"></script>
+  <script src="../shared/agent-widget.js?v=20260623-agent-v2-matrix"></script>
+  <script>
+    (function () {
+      "use strict";
+      const body = document.getElementById("patientTableBody");
+      const searchInput = document.getElementById("patientSearchInput");
+      const departmentFilter = document.getElementById("departmentFilter");
+      const emptyState = document.getElementById("emptyState");
+        const syncNote = document.getElementById("syncNote");
+        const patientCountMeta = document.getElementById("patientCountMeta");
+        let expandedId = "";
+        window.localStorage.setItem("hisDemoAuthenticated", "true");
+        if (!window.localStorage.getItem("hisDemoAuthenticatedAt")) {
+          window.localStorage.setItem("hisDemoAuthenticatedAt", new Date().toISOString());
+        }
+
+      function renderDepartments() {
+        const departments = Array.from(new Set(PatientStore.getAllPatients().map(function (patient) { return patient.department; }).filter(Boolean))).sort();
+        departmentFilter.innerHTML = '<option value="">全部科室</option>' + departments.map(function (department) {
+          return '<option value="' + escapeHtml(department) + '">' + escapeHtml(department) + '</option>';
+        }).join("");
+      }
+
+      function getFilteredPatients() {
+        const query = searchInput.value.trim();
+        const department = departmentFilter.value;
+        return PatientStore.findPatients(query).filter(function (patient) {
+          return !department || patient.department === department;
+        });
+      }
+
+      function renderTable() {
+        const patients = getFilteredPatients();
+        const total = PatientStore.getAllPatients().length;
+        patientCountMeta.textContent = "当前显示 " + patients.length + " 人 / 共 " + total + " 人。常用字段直接展示，问诊病历长文本通过“查看详情”展开。";
+        body.innerHTML = "";
+        patients.forEach(function (patient) {
+          const row = document.createElement("tr");
+          row.dataset.patientId = patient.patientId;
+          row.innerHTML = [
+            cell(patient.patientId), cell(patient.name), cell(patient.gender), cell(patient.age), cell(patient.phone),
+            cell(patient.department), cell(patient.visitStatus), '<td class="summary">' + escapeHtml(summary(patient.chiefComplaint)) + '</td>',
+            '<td><div>' + escapeHtml(formatTime(patient.lastModifiedAt)) + '</div><div class="timestamp">' + escapeHtml(patient.lastModifiedSource || "localStorage Demo") + '</div></td>',
+            '<td><button type="button" class="btn-primary" data-edit="' + escapeHtml(patient.patientId) + '">编辑</button> <button type="button" class="btn-secondary" data-detail="' + escapeHtml(patient.patientId) + '">查看详情</button></td>'
+          ].join("");
+          body.appendChild(row);
+          if (expandedId === patient.patientId) body.appendChild(detailRow(patient));
+        });
+        emptyState.hidden = patients.length > 0;
+      }
+
+      function detailRow(patient) {
+        const row = document.createElement("tr");
+        row.className = "detail-row";
+        const fields = PatientFieldSchema.fields.filter(function (field) { return field.showInEditor && !field.showInManagement; });
+        row.innerHTML = '<td colspan="10"><div class="detail-grid">' + fields.map(function (field) {
+          return '<div class="detail-item"><strong>' + escapeHtml(field.label) + '</strong><span>' + escapeHtml(patient[field.key] || "暂无") + '</span></div>';
+        }).join("") + '</div></td>';
+        return row;
+      }
+
+      function cell(value) { return "<td>" + escapeHtml(value == null ? "" : value) + "</td>"; }
+      function summary(value) { const text = String(value || ""); return text.length > 42 ? text.slice(0, 42) + "..." : text; }
+      function formatTime(value) { return value ? value.replace("T", " ").slice(0, 16) : "暂无"; }
+      function flashPendingAgentRow() {
+        try {
+          const detail = JSON.parse(window.localStorage.getItem("hisAgentUiFeedback") || "null");
+          if (detail && detail.patientId && Date.now() - Number(detail.at || 0) < 10000) flashPatientRow(detail.patientId);
+        } catch (error) {}
+      }
+      function flashPatientRow(patientId) {
+        const row = body.querySelector('[data-patient-id="' + cssEscape(patientId) + '"]');
+        if (!row) return;
+        row.classList.remove("his-agent-row-flash");
+        void row.offsetWidth;
+        row.classList.add("his-agent-row-flash");
+      }
+      function cssEscape(value) { return window.CSS && typeof window.CSS.escape === "function" ? window.CSS.escape(value) : String(value).replace(/"/g, '\\"'); }
+      function escapeHtml(value) { return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+
+      body.addEventListener("click", function (event) {
+        const edit = event.target.closest("[data-edit]");
+        if (edit) {
+          window.location.href = "patient-editor.html?patientId=" + encodeURIComponent(edit.dataset.edit);
+          return;
+        }
+        const detail = event.target.closest("[data-detail]");
+        if (detail) {
+          expandedId = expandedId === detail.dataset.detail ? "" : detail.dataset.detail;
+          renderTable();
+        }
+      });
+
+      searchInput.addEventListener("input", renderTable);
+      departmentFilter.addEventListener("change", renderTable);
+      document.getElementById("clearFiltersButton").addEventListener("click", function () {
+        searchInput.value = "";
+        departmentFilter.value = "";
+        renderTable();
+      });
+      document.getElementById("resetPatientsButton").addEventListener("click", function () {
+        PatientStore.resetDemoPatients();
+        syncNote.textContent = "已重置 Demo 数据。";
+        renderDepartments();
+        renderTable();
+      });
+
+      PatientStore.subscribePatientChanges(function () {
+        syncNote.textContent = "已同步患者数据更新。数据源：localStorage Demo。";
+        renderDepartments();
+        renderTable();
+        flashPendingAgentRow();
+      });
+
+      window.addEventListener("storage", function (event) {
+        if (event.key !== "hisAgentUiFeedback" || !event.newValue) return;
+        try {
+          const detail = JSON.parse(event.newValue);
+          if (detail && detail.patientId) flashPatientRow(detail.patientId);
+        } catch (error) {}
+      });
+
+      window.addEventListener("his-agent-ui-feedback", function (event) {
+        const detail = event && event.detail ? event.detail : {};
+        if (detail.patientId) flashPatientRow(detail.patientId);
+      });
+
+        window.collectHisPageState = function () {
+          const visiblePatientList = getFilteredPatients().slice(0, 20).map(function (patient) {
+            return { patientId: patient.patientId, name: patient.name, phone: patient.phone, idNumber: patient.idNumber, gender: patient.gender, department: patient.department, chiefComplaint: patient.chiefComplaint };
+          });
+          return {
+            pageType: "patientManagement",
+            isLoginPage: false,
+            isInHisContext: true,
+            hisDemoAuthenticated: true,
+            loginState: {
+              authenticated: true,
+              isDemoLoggedIn: true,
+              isInHisContext: true
+            },
+            url: window.location.href,
+          currentFilter: {
+            search: searchInput.value.trim(),
+            department: departmentFilter.value
+          },
+          visiblePatientList: visiblePatientList,
+          patientListSummary: visiblePatientList,
+          fullPatientIndex: PatientStore.getPatientIndex ? PatientStore.getPatientIndex() : PatientStore.getAllPatients(),
+          fieldSchema: PatientFieldSchema.fields
+        };
+      };
+
+      window.applyHisAgentAction = async function (action) {
+          if (!action || !action.type) return { handled: false };
+        if (action.type === "open_patient_editor" || action.type === "select_patient") {
+            const args = action.args || {};
+              const patientId = args.patientId || (args.patient && args.patient.patientId) || action.value;
+              const patient = PatientStore.getPatientById(patientId);
+              if (!patient) return { handled: true, success: false, message: "未找到唯一患者。" };
+              const editButton = document.querySelector('[data-edit="' + cssEscape(patient.patientId) + '"]');
+            if (window.HisUiActionFeedback) {
+              window.HisUiActionFeedback.highlightPatientRow(patient.patientId);
+              await window.HisUiActionFeedback.sleep(120);
+              await window.HisUiActionFeedback.agentClickElement(editButton, {
+                click: false,
+                message: "Agent 正在打开患者：" + patient.patientId + " " + patient.name,
+                afterMs: 110
+              });
+            }
+              window.setTimeout(function () {
+              window.location.href = "patient-editor.html?patientId=" + encodeURIComponent(patient.patientId);
+              }, 170);
+            return { handled: true, success: true, message: "正在打开患者编辑页。" };
+            }
+        return { handled: false };
+      };
+
+      renderDepartments();
+      renderTable();
+      flashPendingAgentRow();
+    })();
+  </script>
+</body>
+</html>

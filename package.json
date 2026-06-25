@@ -1,0 +1,23 @@
+{
+  "name": "universal-agent-his-demo",
+  "private": true,
+  "scripts": {
+    "test:e2e": "playwright test -c tests/e2e/playwright.config.ts",
+    "test:e2e:headed": "playwright test -c tests/e2e/playwright.config.ts --headed",
+    "test:e2e:llm": "RUN_LLM_E2E=1 playwright test -c tests/e2e/playwright.config.ts --grep @llm",
+    "check:encoding": "node scripts/check-encoding.mjs",
+    "catalog:human-actions": "node scripts/generate-human-action-catalog.mjs",
+    "loop:baseline": "node loop-engineering/scripts/run-loop.mjs --mode baseline",
+    "loop:evaluate": "node loop-engineering/scripts/run-loop.mjs --mode evaluate",
+    "loop:smoke": "node loop-engineering/scripts/run-loop.mjs --mode smoke",
+    "loop:full": "node loop-engineering/scripts/run-loop.mjs --mode full",
+    "agent:loop": "node loop-engineering/scripts/run-loop.mjs --mode evaluate",
+    "loop:matrix": "node loop-engineering/scripts/generate-patient-field-matrix.mjs",
+    "loop:voice-role": "node loop-engineering/scripts/evaluate-voice-role-cases.mjs",
+    "loop:voice-task-equivalence": "node loop-engineering/scripts/evaluate-voice-task-equivalence.mjs",
+    "loop:perf": "node loop-engineering/scripts/collect-performance-baseline.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "latest"
+  }
+}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unknown Page Fixture</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+      color: #172033;
+      background: #f8fafc;
+    }
+    main {
+      max-width: 820px;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+    form, .modal, .scroll-area {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #fff;
+      padding: 16px;
+    }
+    label {
+      display: grid;
+      gap: 6px;
+      margin: 10px 0;
+      font-weight: 700;
+    }
+    input, textarea, select, button {
+      font: inherit;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+    }
+    button {
+      cursor: pointer;
+      background: #1d4ed8;
+      color: #fff;
+      font-weight: 800;
+    }
+    .scroll-area {
+      max-height: 120px;
+      overflow: auto;
+    }
+    .modal[hidden] {
+      display: none;
+    }
+    #result {
+      min-height: 28px;
+      color: #047857;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body data-page-type="unknownFixture">
+  <main>
+    <h1>Unknown Page Fixture</h1>
+    <form id="fixtureForm">
+      <label for="fixtureName">姓名</label>
+      <input id="fixtureName" name="name" data-testid="fixture-name" placeholder="请输入姓名" required />
+
+      <label for="fixtureNote">备注</label>
+      <textarea id="fixtureNote" name="note" data-testid="fixture-note"></textarea>
+
+      <label for="fixtureDepartment">科室</label>
+      <select id="fixtureDepartment" name="department" data-testid="fixture-department">
+        <option value="">请选择</option>
+        <option value="呼吸内科">呼吸内科</option>
+        <option value="心血管内科">心血管内科</option>
+      </select>
+
+      <label for="fixtureDate">日期</label>
+      <input id="fixtureDate" type="date" name="date" data-testid="fixture-date" />
+
+      <label>
+        <input id="fixtureConsent" type="checkbox" name="consent" data-testid="fixture-consent" />
+        同意记录
+      </label>
+
+      <fieldset>
+        <legend>优先级</legend>
+        <label><input type="radio" name="priority" value="normal" /> 普通</label>
+        <label><input type="radio" name="priority" value="urgent" data-testid="fixture-urgent" /> 加急</label>
+      </fieldset>
+
+      <button type="submit" data-testid="fixture-submit">提交</button>
+    </form>
+
+    <button type="button" id="openModalButton">打开弹窗</button>
+    <section class="modal" role="dialog" aria-label="测试弹窗" hidden>
+      <p>这是一个测试弹窗。</p>
+      <button type="button" id="closeModalButton">关闭弹窗</button>
+    </section>
+
+    <a href="#fixtureTable" id="fixtureLink">跳到表格</a>
+    <div class="scroll-area" tabindex="0" aria-label="滚动区域">
+      <p>第一行</p><p>第二行</p><p>第三行</p><p>第四行</p><p>第五行</p><p>第六行</p>
+    </div>
+    <table id="fixtureTable">
+      <thead><tr><th>字段</th><th>值</th></tr></thead>
+      <tbody><tr><td>示例</td><td>可读结果</td></tr></tbody>
+    </table>
+    <output id="result" role="status"></output>
+  </main>
+  <script src="../../shared/agent-flow-trace.js?v=fixture"></script>
+  <script src="../../shared/generic-browser-agent.js?v=fixture"></script>
+  <script>
+    document.querySelector("#openModalButton").addEventListener("click", function () {
+      document.querySelector(".modal").hidden = false;
+    });
+    document.querySelector("#closeModalButton").addEventListener("click", function () {
+      document.querySelector(".modal").hidden = true;
+    });
+    document.querySelector("#fixtureForm").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      document.querySelector("#result").textContent = [
+        data.get("name"),
+        data.get("note"),
+        data.get("department"),
+        data.get("date"),
+        data.get("consent") ? "consented" : "no-consent",
+        data.get("priority") || ""
+      ].filter(Boolean).join(" | ");
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+[
+  {
+    "id": "case_demo_patient_seed_count_020",
+    "title": "Demo 患者数量应为 20",
+    "startPage": "patient-management",
+    "input": "打开患者管理页并检查 Demo 患者数量",
+    "expected": {
+      "patientCount": 20,
+      "patientIds": "P001-P020",
+      "contains": [
+        { "patientId": "P001", "name": "张伟" },
+        { "patientId": "P002", "name": "李娜" },
+        { "patientId": "P003", "name": "王强" },
+        { "patientId": "P020" }
+      ],
+      "resetKeepsPatientCount": true,
+      "migrationFromFivePatientsKeepsExistingEdits": true,
+      "migrationDoesNotClearAuditLog": true,
+      "patientResolverUsesFullStore": true,
+      "noLocalFallback": true,
+      "llmRequired": false,
+      "status": "fixed"
+    },
+    "notes": "这是 patient-store seed / migration / management table 的数据完整性验收，不需要 LLM 执行动作。"
+  },
+  {
+    "id": "case_update_p001_phone_001",
+    "title": "修改 P001 手机号并保存",
+    "startPage": "patient-management",
+    "input": "修改患者 P001 的手机号为 13800138000 并保存",
+    "expected": {
+      "patientId": "P001",
+      "field": "phone",
+      "value": "13800138000",
+      "auditLog": true,
+      "patientStoreChanged": true,
+      "mutatesDemoData": true,
+      "restoreFixture": "localStorageSnapshot",
+      "noLocalFallback": true,
+      "llmRequired": true,
+      "requiresLogin": false,
+      "status": "active"
+    },
+    "notes": "已处于 HIS 内部页面时，真实任务应由后端 LLM 规划打开编辑页/修改字段/保存/校验，本地不得用关键词 fallback。"
+  },
+  {
+    "id": "case_update_zhangwei_gender_001",
+    "title": "把张伟性别改成女",
+    "startPage": "patient-management",
+    "input": "把张伟的性别改成女",
+    "expected": {
+      "patientId": "P001",
+      "field": "gender",
+      "value": "女",
+      "auditLog": true,
+      "patientStoreChanged": true,
+      "mutatesDemoData": true,
+      "restoreFixture": "localStorageSnapshot",
+      "noLocalFallback": true,
+      "llmRequired": true,
+      "requiresLogin": false,
+      "status": "active"
+    },
+    "notes": "patient resolver 应唯一匹配张伟 -> P001；field resolver 应解析性别 -> gender。"
+  },
+  {
+    "id": "case_update_lina_department_001",
+    "title": "修改李娜科室",
+    "startPage": "patient-management",
+    "input": "把李娜的科室改成消化内科并保存",
+    "expected": {
+      "patientId": "P002",
+      "field": "department",
+      "value": "消化内科",
+      "auditLog": true,
+      "patientStoreChanged": true,
+      "mutatesDemoData": true,
+      "restoreFixture": "localStorageSnapshot",
+      "noLocalFallback": true,
+      "llmRequired": true,
+      "requiresLogin": false,
+      "status": "active"
+    },
+    "notes": "用于验证中文姓名、科室/就诊科室别名和 select 选项合法性。"
+  },
+  {
+    "id": "case_patient_not_found_001",
+    "title": "不存在患者应提示找不到",
+    "startPage": "patient-management",
+    "input": "把不存在患者ABC的手机号改成 13800138000",
+    "expected": {
+      "patientId": null,
+      "field": "phone",
+      "value": "13800138000",
+      "auditLog": false,
+      "patientStoreChanged": false,
+      "mutatesDemoData": false,
+      "noLocalFallback": true,
+      "llmRequired": true,
+      "requiresLogin": false,
+      "status": "should_fail_not_found"
+    },
+    "notes": "resolver 应返回 not_found，不允许随机选择患者。"
+  },
+  {
+    "id": "case_patient_ambiguous_001",
+    "title": "模糊患者应要求澄清",
+    "startPage": "patient-management",
+    "input": "把张的手机号改成 13800138000",
+    "expected": {
+      "patientId": null,
+      "field": "phone",
+      "value": "13800138000",
+      "auditLog": false,
+      "patientStoreChanged": false,
+      "mutatesDemoData": false,
+      "noLocalFallback": true,
+      "llmRequired": true,
+      "requiresLogin": false,
+      "status": "should_ask_clarification"
+    },
+    "notes": "当存在多个候选时才 waiting_user / ask_clarification，不能猜测。"
+  },
+  {
+    "id": "case_no_llm_no_action_001",
+    "title": "无 LLM 时不执行患者修改",
+    "startPage": "patient-editor",
+    "input": "修改患者 P001 的手机号为 13800138000 并保存",
+    "expected": {
+      "patientId": "P001",
+      "field": "phone",
+      "value": "13800138000",
+      "auditLog": false,
+      "patientStoreChanged": false,
+      "mutatesDemoData": false,
+      "noLocalFallback": true,
+      "llmRequired": true,
+      "requiresLogin": false,
+      "status": "blocked_no_llm"
+    },
+    "notes": "悬浮框可显示和接收输入，但不执行页面 action、不写 patient-store、不写 audit log。"
+  },
+  {
+    "id": "case_login_requires_auth_001",
+    "title": "登录页输入患者修改任务应先提示登录",
+    "startPage": "login",
+    "input": "把张伟的手机号改成 13800138000",
+    "expected": {
+      "patientId": "P001",
+      "field": "phone",
+      "value": "13800138000",
+      "auditLog": false,
+      "patientStoreChanged": false,
+      "mutatesDemoData": false,
+      "noLocalFallback": true,
+      "llmRequired": true,
+      "requiresLogin": true,
+      "status": "fixed_waiting_user"
+    },
+    "notes": "已修复：LLM 返回受保护 HIS 计划后，前端 precondition 会在 login 未认证状态拦截为 waiting_user，不执行 resolver、导航、修改或保存。"
+  },
+  {
+    "id": "case_login_with_credentials_001",
+    "title": "登录页提供账号密码后执行患者修改任务",
+    "startPage": "login",
+    "input": "账号密码都是 123，帮我把张伟的手机号改成 13800138000。",
+    "expected": {
+      "patientId": "P001",
+      "field": "phone",
+      "value": "13800138000",
+      "auditLog": true,
+      "patientStoreChanged": true,
+      "mutatesDemoData": true,
+      "restoreFixture": "localStorageSnapshot",
+      "noLocalFallback": true,
+      "llmRequired": true,
+      "requiresLogin": true,
+      "status": "active"
+    },
+    "notes": "LLM planner 应先返回 fill_login_form / submit_login，再规划 dashboard -> patient-management -> patient-editor -> update/save/verify。"
+  }
+]

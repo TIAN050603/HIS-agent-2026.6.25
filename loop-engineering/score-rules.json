@@ -1,0 +1,22 @@
+{
+  "baseScore": 100,
+  "hardFailures": {
+    "wrong_patient_modified": -100,
+    "invalid_credentials_logged_in": -100,
+    "no_mutation_saved_or_completed": -100,
+    "no_llm_page_action": -100,
+    "terminal_task_reanimated": -100,
+    "data_restore_failed": -100
+  },
+  "deductions": {
+    "P0_failed": -50,
+    "P1_failed": -20,
+    "P2_failed": -10,
+    "default_e2e_failed": -30,
+    "llm_e2e_failed": -30,
+    "duplicate_error_message": -5,
+    "latest_output_not_visible": -5,
+    "ui_view_state_wrong": -5,
+    "history_field_missing": -5
+  }
+}

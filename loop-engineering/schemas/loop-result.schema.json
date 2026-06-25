@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Loop Iteration Result",
+  "type": "object",
+  "required": [
+    "iteration",
+    "mode",
+    "run_id",
+    "score",
+    "passed",
+    "failed",
+    "skipped",
+    "hard_failures",
+    "case_results",
+    "data_restored"
+  ],
+  "properties": {
+    "iteration": { "type": "integer", "minimum": 1 },
+    "mode": { "type": "string" },
+    "run_id": { "type": "string" },
+    "score": { "type": "number" },
+    "passed": { "type": "integer" },
+    "failed": { "type": "integer" },
+    "skipped": { "type": "integer" },
+    "hard_failures": { "type": "array" },
+    "first_failure": { "type": ["object", "null"] },
+    "regressions": { "type": "array" },
+    "data_restored": { "type": "boolean" },
+    "recommended_fix_layer": { "type": "string" },
+    "case_results": { "type": "array" }
+  },
+  "additionalProperties": true
+}

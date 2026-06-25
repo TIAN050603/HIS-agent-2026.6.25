@@ -1,0 +1,586 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>修改历史 / Agent 执行记录 - HIS Demo</title>
+  <link rel="stylesheet" href="../shared/agent-widget.css?v=20260623-agent-v2-matrix" />
+  <style>
+    :root {
+      --bg: #f3f7fb;
+      --panel: #ffffff;
+      --soft: #f8fbff;
+      --text: #172033;
+      --muted: #64748b;
+      --line: #d8e1ee;
+      --primary: #2754d8;
+      --dark: #12335f;
+      --success: #047857;
+      --warn: #b45309;
+      --danger: #b42318;
+      --shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", Arial, sans-serif; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 72px; padding: 0 28px; background: #fff; border-bottom: 1px solid var(--line); }
+    .topbar h1 { margin: 0; color: var(--dark); font-size: 24px; }
+    .topbar p { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px 13px; background: #fff; color: #1f2937; font: inherit; font-size: 13px; font-weight: 700; text-decoration: none; cursor: pointer; }
+    .btn-primary { border-color: transparent; background: var(--primary); color: #fff; }
+    .page { width: min(1420px, calc(100% - 32px)); margin: 20px auto 48px; display: grid; grid-template-columns: minmax(260px, 360px) minmax(0, 1fr); gap: 16px; align-items: start; }
+    .card { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); box-shadow: var(--shadow); overflow: hidden; }
+    .card-header { padding: 16px 18px; border-bottom: 1px solid var(--line); background: var(--soft); }
+    .card-header h2 { margin: 0; color: var(--dark); font-size: 18px; }
+    .card-header p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+    .card-body { padding: 16px 18px; }
+    .task-list { display: grid; gap: 8px; max-height: calc(100vh - 220px); overflow: auto; padding-right: 2px; }
+    .task-list button { display: grid; gap: 4px; width: 100%; min-height: 70px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--text); text-align: left; cursor: pointer; }
+    .task-list button.active { border-color: #93c5fd; background: #eff6ff; box-shadow: inset 3px 0 0 var(--primary); }
+    .task-title { font-size: 13px; font-weight: 800; color: #0f172a; }
+    .task-meta, .meta-row { display: flex; flex-wrap: wrap; gap: 6px; color: var(--muted); font-size: 12px; }
+    .pill { display: inline-flex; align-items: center; min-height: 24px; padding: 3px 8px; border: 1px solid var(--line); border-radius: 999px; background: #f8fafc; font-size: 12px; font-weight: 800; }
+    .pill.completed { color: var(--success); }
+    .pill.running { color: var(--primary); }
+    .pill.failed { color: var(--danger); }
+    .pill.waiting_user { color: var(--warn); }
+    .pill.cancelled { color: var(--muted); }
+    .detail-head { display: grid; gap: 10px; }
+    .detail-head h2 { margin: 0; color: var(--dark); font-size: 22px; }
+    .summary-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+    .summary-item { min-height: 72px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+    .summary-item span { display: block; color: var(--muted); font-size: 12px; }
+    .summary-item strong { display: block; margin-top: 4px; color: #0f172a; font-size: 17px; word-break: break-word; }
+    .section { margin-top: 16px; }
+    .section h3 { margin: 0 0 9px; color: #334155; font-size: 15px; }
+    .step-list { display: grid; gap: 9px; }
+    .step-item { border: 1px solid var(--line); border-radius: 8px; background: #fff; overflow: hidden; }
+    .step-item.completed { border-color: #bbf7d0; box-shadow: inset 3px 0 0 var(--success); }
+    .step-item.running { border-color: #93c5fd; box-shadow: inset 3px 0 0 var(--primary); }
+    .step-item.failed { border-color: #fda29b; box-shadow: inset 3px 0 0 var(--danger); }
+    .step-item.waiting_user { border-color: #fed7aa; box-shadow: inset 3px 0 0 var(--warn); }
+    .step-item.cancelled { border-color: #cbd5e1; box-shadow: inset 3px 0 0 var(--muted); }
+    .step-item summary { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 9px; padding: 10px 12px; cursor: pointer; list-style: none; }
+    .step-item summary::-webkit-details-marker { display: none; }
+    .mark { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 999px; background: #f1f5f9; color: #475569; font-weight: 900; }
+    .mark.completed { background: #dcfce7; color: var(--success); }
+    .mark.running { background: #dbeafe; color: var(--primary); }
+    .mark.failed { background: #fff1f0; color: var(--danger); }
+    .mark.waiting_user { background: #fff7ed; color: var(--warn); }
+    .mark.cancelled { background: #f1f5f9; color: var(--muted); }
+    .step-main { display: grid; gap: 5px; min-width: 0; }
+    .step-main strong { color: #0f172a; font-size: 13px; line-height: 1.35; word-break: break-word; }
+    .step-error { color: var(--danger); font-size: 12px; font-weight: 800; }
+    .step-detail { display: grid; gap: 10px; padding: 0 12px 12px 49px; }
+    .kv-grid { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 5px 10px; color: var(--muted); font-size: 12px; }
+    .kv-grid strong { color: #334155; word-break: break-word; }
+    details.debug { border: 1px dashed #cbd5e1; border-radius: 8px; background: #fff; }
+    details.debug summary { padding: 11px 12px; cursor: pointer; color: #334155; font-size: 13px; font-weight: 800; }
+    pre { max-height: 280px; overflow: auto; margin: 0; padding: 10px; border-radius: 6px; background: #0f172a; color: #e2e8f0; font-size: 11px; line-height: 1.45; white-space: pre-wrap; }
+    .empty { padding: 22px; color: var(--muted); }
+    .patient-card, .audit-item { padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; font-size: 13px; }
+    .patient-card strong, .audit-item strong { color: #0f172a; }
+    .audit-list { display: grid; gap: 8px; max-height: 260px; overflow: auto; }
+    @media (max-width: 980px) { .page { grid-template-columns: 1fr; } .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .task-list { max-height: none; } }
+    @media (max-width: 640px) { .topbar { align-items: flex-start; flex-direction: column; padding: 16px; } .page { width: min(100% - 20px, 1420px); } .summary-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body data-page-type="agentHistory">
+  <header class="topbar">
+    <div>
+      <h1>修改历史 / Agent 执行记录</h1>
+      <p>从悬浮 Agent 迁移出的任务步骤、token、resolver、adapter 和审计详情。</p>
+    </div>
+    <nav class="actions" aria-label="页面操作">
+      <a class="btn" href="dashboard.html">返回工作台</a>
+      <a class="btn" href="patient-management.html">返回患者管理</a>
+      <a class="btn btn-primary" id="patientEditorLink" href="patient-editor.html">返回当前患者编辑页</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <aside class="card">
+      <div class="card-header">
+        <h2>历史任务列表</h2>
+        <p id="historyCount">正在读取本地任务记录。</p>
+      </div>
+      <div class="card-body">
+        <div class="task-list" id="taskList"></div>
+      </div>
+    </aside>
+
+    <section class="card">
+      <div class="card-header">
+        <div class="detail-head">
+          <div>
+            <h2 id="taskTitle">请选择任务</h2>
+            <div class="meta-row" id="taskMeta"></div>
+          </div>
+          <div class="summary-grid" id="summaryGrid"></div>
+        </div>
+      </div>
+      <div class="card-body" id="taskDetail"></div>
+    </section>
+  </main>
+
+  <script src="../shared/runtime-config.js?v=20260625-ports"></script>
+  <script src="../shared/patient-field-schema.js?v=20260621-voice-plan"></script>
+  <script src="../shared/patient-store.js?v=20260621-voice-plan"></script>
+  <script src="../shared/voice-input-controller.js?v=20260621-voice-plan"></script>
+  <script src="../shared/ui-action-feedback.js?v=20260622-history-auth-feedback"></script>
+  <script src="../shared/agent-state-machine.js?v=20260622-agent-v2"></script>
+  <script src="../shared/agent-input-router.js?v=20260625-input-router"></script>
+  <script src="../shared/agent-scroll-manager.js?v=20260622-agent-v2"></script>
+  <script src="../shared/agent-task-model.js?v=20260622-agent-v2"></script>
+  <script src="../shared/agent-flow-trace.js?v=20260623-agent-v2-matrix"></script>
+  <script src="../shared/generic-browser-agent.js?v=20260624-gui-observe-action"></script>
+  <script src="../shared/agent-task-orchestrator.js?v=20260625-loop-gate"></script>
+  <script src="../shared/agent-widget-bootstrap.js?v=20260621-voice-plan"></script>
+  <script src="../shared/agent-widget.js?v=20260623-agent-v2-matrix"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      const TASK_KEY = "hisAgentActiveTask";
+      const HISTORY_KEY = "hisAgentTaskHistory";
+      const taskList = document.getElementById("taskList");
+      const historyCount = document.getElementById("historyCount");
+      const taskTitle = document.getElementById("taskTitle");
+      const taskMeta = document.getElementById("taskMeta");
+      const summaryGrid = document.getElementById("summaryGrid");
+      const taskDetail = document.getElementById("taskDetail");
+      const patientEditorLink = document.getElementById("patientEditorLink");
+      let selectedTaskId = new URLSearchParams(window.location.search).get("taskId") || "";
+      window.localStorage.setItem("hisDemoAuthenticated", "true");
+      if (!window.localStorage.getItem("hisDemoAuthenticatedAt")) {
+        window.localStorage.setItem("hisDemoAuthenticatedAt", new Date().toISOString());
+      }
+
+      function readJson(key, fallback) {
+        try {
+          const value = window.localStorage.getItem(key);
+          return value ? JSON.parse(value) : fallback;
+        } catch (error) {
+          return fallback;
+        }
+      }
+
+      function readTasks() {
+        const active = readJson(TASK_KEY, null);
+        const history = readJson(HISTORY_KEY, []);
+        const tasks = [];
+        if (active && active.task_id) tasks.push(Object.assign({ __active: true }, active));
+        (Array.isArray(history) ? history : []).slice().reverse().forEach(function (item) {
+          if (item && item.task_id && !tasks.some(function (task) { return task.task_id === item.task_id; })) {
+            tasks.push(item);
+          }
+        });
+        return tasks;
+      }
+
+      function render() {
+        const tasks = readTasks();
+        if (!selectedTaskId && tasks[0]) selectedTaskId = tasks[0].task_id;
+        renderList(tasks);
+        const selected = tasks.find(function (task) { return task.task_id === selectedTaskId; }) || tasks[0] || null;
+        renderDetail(selected);
+      }
+
+      function renderList(tasks) {
+        historyCount.textContent = tasks.length ? "共 " + tasks.length + " 条任务记录。" : "暂无任务记录。";
+        if (!tasks.length) {
+          taskList.innerHTML = '<div class="empty">暂无 Agent 执行记录。完成或开始任务后会显示在这里。</div>';
+          return;
+        }
+        taskList.innerHTML = tasks.map(function (task) {
+          const status = normalizeStatus(task.status);
+          const active = task.task_id === selectedTaskId ? " active" : "";
+          const patientId = extractPatientId(task);
+          return '<button type="button" class="' + active + '" data-task-id="' + escapeHtml(task.task_id) + '">' +
+            '<span class="task-title">' + escapeHtml(task.__active ? "当前任务 / " + (task.objective || task.task_id) : task.objective || task.task_id) + '</span>' +
+            '<span class="task-meta">' +
+            '<span class="pill ' + escapeHtml(status) + '">' + escapeHtml(status) + '</span>' +
+            '<span>耗时：' + escapeHtml(formatElapsed(taskElapsedMs(task))) + '</span>' +
+            '<span>' + escapeHtml(taskUsageText(task)) + '</span>' +
+            '<span>患者：' + escapeHtml(patientId || "未记录") + '</span>' +
+            '<span>来源：' + escapeHtml(taskSource(task)) + '</span>' +
+            '</span>' +
+            '</button>';
+        }).join("");
+        Array.from(taskList.querySelectorAll("button[data-task-id]")).forEach(function (button) {
+          button.addEventListener("click", function () {
+            selectedTaskId = button.dataset.taskId || "";
+            window.history.replaceState(null, "", selectedTaskId ? "agent-history.html?taskId=" + encodeURIComponent(selectedTaskId) : "agent-history.html");
+            render();
+          });
+        });
+      }
+
+      function renderDetail(task) {
+        if (!task) {
+          taskTitle.textContent = "暂无任务记录";
+          taskMeta.innerHTML = "";
+          summaryGrid.innerHTML = "";
+          taskDetail.innerHTML = '<div class="empty">可以从悬浮框发送任务，或完成一次 Agent 操作后再回来查看。</div>';
+          patientEditorLink.href = "patient-editor.html";
+          return;
+        }
+        const patientId = extractPatientId(task);
+        const patient = patientId && window.PatientStore ? window.PatientStore.getPatientById(patientId) : null;
+        patientEditorLink.href = patientId ? "patient-editor.html?patientId=" + encodeURIComponent(patientId) : "patient-editor.html";
+        taskTitle.textContent = task.objective || task.task_id || "Agent 任务";
+        taskMeta.innerHTML = [
+          '<span class="pill ' + escapeHtml(normalizeStatus(task.status)) + '">' + escapeHtml(normalizeStatus(task.status)) + '</span>',
+          '<span>taskId：' + escapeHtml(task.task_id || "-") + '</span>',
+          '<span>source：' + escapeHtml(taskSource(task)) + '</span>',
+          '<span>创建：' + escapeHtml(formatTimestamp(task.created_at || task.started_at, task.created_at_ms || task.started_at_ms)) + '</span>',
+          '<span>完成：' + escapeHtml(formatTimestamp(task.finished_at, task.finished_at_ms)) + '</span>'
+        ].join("");
+        const usage = usageBreakdown(task);
+        const timing = taskTimingBreakdown(task);
+        summaryGrid.innerHTML = [
+          summaryItem("进度", completedSteps(task) + "/" + totalSteps(task)),
+          summaryItem("总耗时", formatElapsed(taskElapsedMs(task))),
+          summaryItem("规划耗时", timing.planning),
+          summaryItem("页面执行", timing.action),
+          summaryItem("校验耗时", timing.verify),
+          summaryItem("总 token", usage.total),
+          summaryItem("Prompt/Completion", usage.prompt + " / " + usage.completion),
+          summaryItem("来源", taskSource(task)),
+          summaryItem("相关患者", patient ? patient.patientId + " " + patient.name : patientId || "-")
+        ].join("");
+
+        taskDetail.innerHTML = [
+          renderPatient(patient, patientId),
+          renderSteps(task),
+          renderAudit(patientId, task.task_id),
+          renderDeveloperDetails(task)
+        ].join("");
+      }
+
+      function summaryItem(label, value) {
+        return '<div class="summary-item"><span>' + escapeHtml(label) + '</span><strong>' + escapeHtml(value) + '</strong></div>';
+      }
+
+      function renderPatient(patient, patientId) {
+        if (!patientId && !patient) return "";
+        if (!patient) {
+          return '<section class="section"><h3>相关患者摘要</h3><div class="patient-card">未在 patient-store 中找到 ' + escapeHtml(patientId) + '。</div></section>';
+        }
+        return '<section class="section"><h3>相关患者摘要</h3><div class="patient-card">' +
+          '<strong>' + escapeHtml(patient.patientId + " " + patient.name) + '</strong><br />' +
+          '性别：' + escapeHtml(patient.gender || "-") + ' / 手机号：' + escapeHtml(patient.phone || "-") + ' / 科室：' + escapeHtml(patient.department || "-") + '<br />' +
+          '主诉：' + escapeHtml(patient.chiefComplaint || "-") +
+          '</div></section>';
+      }
+
+      function renderSteps(task) {
+        const plan = Array.isArray(task.plan) ? task.plan : [];
+        if (!plan.length) return '<section class="section"><h3>结构化任务步骤</h3><div class="empty">暂无结构化步骤。</div></section>';
+        return '<section class="section"><h3>结构化任务步骤</h3><div class="step-list">' + plan.map(function (step, index) {
+          const status = normalizeStatus(step.status || (index === task.current_step_index ? "running" : "pending"));
+          const reason = status === "failed" || status === "waiting_user" ? step.error || (step.result && step.result.error) || task.lastError || "" : "";
+          return '<details class="step-item ' + escapeHtml(status) + '">' +
+            '<summary>' +
+            '<span class="mark ' + escapeHtml(status) + '">' + escapeHtml(statusIcon(status)) + '</span>' +
+            '<span class="step-main">' +
+            '<strong>' + escapeHtml(index + 1 + ". " + (step.goal || step.id || "未命名步骤")) + '</strong>' +
+            '<span class="meta-row"><span class="pill ' + escapeHtml(status) + '">' + escapeHtml(status) + '</span><span>' + escapeHtml(stepElapsedLabel(step, status)) + '</span><span>' + escapeHtml(stepUsageText(step)) + '</span></span>' +
+            (reason ? '<span class="step-error">原因：' + escapeHtml(reason) + '</span>' : "") +
+            '</span>' +
+            '</summary>' +
+            '<div class="step-detail">' +
+            '<div class="kv-grid">' +
+            '<span>动作</span><strong>' + escapeHtml(step.actionType || step.type || "-") + '</strong>' +
+            '<span>页面</span><strong>' + escapeHtml(step.requiredPage || "-") + '</strong>' +
+            '<span>耗时</span><strong>' + escapeHtml(stepElapsedLabel(step, status)) + '</strong>' +
+            '<span>耗时拆解</span><strong>' + escapeHtml(stepTimingText(step)) + '</strong>' +
+            '<span>Token</span><strong>' + escapeHtml(stepUsageText(step).replace(/^token: /, "")) + '</strong>' +
+            '<span>旧值</span><strong>' + escapeHtml(valueLabel(extractValueChange(step.result || null, "oldValue"))) + '</strong>' +
+            '<span>新值</span><strong>' + escapeHtml(valueLabel(extractValueChange(step.result || null, "newValue"))) + '</strong>' +
+            '<span>audit_id</span><strong>' + escapeHtml(extractAuditId(step.result || null) || "未记录") + '</strong>' +
+            '</div>' +
+            '<details class="debug"><summary>执行详情</summary><pre>' + escapeHtml(JSON.stringify(stepDetails(task, step, index), null, 2)) + '</pre></details>' +
+            '</div>' +
+            '</details>';
+        }).join("") + '</div></section>';
+      }
+
+      function stepDetails(task, step, index) {
+        return {
+          step: index + 1,
+          llmPlanSummary: step.goal || "",
+          structuredAction: {
+            actionType: step.actionType || step.type || "",
+            requiredPage: step.requiredPage || "",
+            args: step.args || {}
+          },
+          patientResolver: extractResolverLogs(task.step_logs, "patient"),
+          fieldResolver: extractResolverLogs(task.step_logs, "field"),
+          adapterExecution: compactResult(step.result || null),
+          oldValue: extractValueChange(step.result || null, "oldValue"),
+          newValue: extractValueChange(step.result || null, "newValue"),
+          audit_id: extractAuditId(step.result || null),
+          error: step.error || "",
+          timing: stepTimingObject(step) || "timing not recorded",
+          usage: stepUsageObject(step) || "token usage not returned",
+          tokenSource: step.usage_source || step.token_source || step.result && (step.result.usage_source || step.result.token_source) || "unknown"
+        };
+      }
+
+      function renderAudit(patientId, taskId) {
+        const audit = window.PatientStore && patientId ? window.PatientStore.getAuditLog(patientId) : [];
+        const related = audit.filter(function (item) { return !taskId || item.task_id === taskId || item.patientId === patientId; }).slice(-12).reverse();
+        if (!related.length) return '<section class="section"><h3>Audit Log</h3><div class="empty">暂无相关审计记录。</div></section>';
+        return '<section class="section"><h3>Audit Log</h3><div class="audit-list">' + related.map(function (item) {
+          return '<div class="audit-item"><strong>' + escapeHtml(item.fieldLabel || item.field || "-") + '</strong>：' +
+            escapeHtml(String(item.oldValue == null ? "" : item.oldValue)) + ' → ' + escapeHtml(String(item.newValue == null ? "" : item.newValue)) +
+            '<div class="task-meta"><span>audit_id：' + escapeHtml(item.audit_id || "-") + '</span><span>task：' + escapeHtml(item.task_id || "-") + '</span><span>' + escapeHtml(item.timestamp || "") + '</span></div></div>';
+        }).join("") + '</div></section>';
+      }
+
+      function renderDeveloperDetails(task) {
+        const debug = {
+          llmPlanSummary: task.objective || "",
+          rawResponse: task.raw_response || task.response || null,
+          trace: task.trace || null,
+          pageStateDebug: task.page_state || null,
+          progressMessages: task.progress_messages || [],
+          stepLogs: task.step_logs || [],
+          timing: task.timing || null,
+          usageLast: task.usage_last || null,
+          usageTotal: task.usage_total || null,
+          lastError: task.lastError || ""
+        };
+        return '<section class="section"><details class="debug"><summary>开发者详情（默认折叠）</summary><pre>' + escapeHtml(JSON.stringify(debug, null, 2)) + '</pre></details></section>';
+      }
+
+      function completedSteps(task) {
+        return (Array.isArray(task.plan) ? task.plan : []).filter(function (step) { return normalizeStatus(step.status) === "completed"; }).length;
+      }
+
+      function totalSteps(task) {
+        return (Array.isArray(task.plan) ? task.plan : []).length;
+      }
+
+      function taskElapsedMs(task) {
+        if (typeof task.elapsed_ms === "number") return task.elapsed_ms;
+        if (task && task.timing && typeof task.timing.total_ms === "number") return task.timing.total_ms;
+        const started = Number(task.started_at_ms || (task.created_at ? task.created_at * 1000 : 0));
+        const finished = Number(task.finished_at_ms || (task.finished_at ? task.finished_at * 1000 : 0));
+        if (started && finished) return Math.max(0, finished - started);
+        if (started && ["running", "waiting_user"].includes(normalizeStatus(task.status))) return Math.max(0, Date.now() - started);
+        return null;
+      }
+
+      function extractPatientId(task) {
+        const slots = task.slots || {};
+        if (slots.patientId) return String(slots.patientId).toUpperCase();
+        if (slots.target_patient_id) return String(slots.target_patient_id).toUpperCase();
+        if (slots.resolved_patient && slots.resolved_patient.patientId) return String(slots.resolved_patient.patientId).toUpperCase();
+        const plan = Array.isArray(task.plan) ? task.plan : [];
+        for (const step of plan) {
+          const selector = step && step.args && step.args.patientSelector || {};
+          if (selector.patientId) return String(selector.patientId).toUpperCase();
+          if (step && step.result && step.result.patientId) return String(step.result.patientId).toUpperCase();
+          const patient = step && step.result && step.result.patient || null;
+          if (patient && patient.patientId) return String(patient.patientId).toUpperCase();
+        }
+        for (const step of plan) {
+          const name = step && step.args && step.args.patientSelector && step.args.patientSelector.name;
+          if (name && window.PatientStore) {
+            const resolved = window.PatientStore.resolvePatientSelector({ name: name });
+            if (resolved && resolved.patient) return resolved.patient.patientId;
+          }
+        }
+        return "";
+      }
+
+      function extractResolverLogs(logs, kind) {
+        const pattern = kind === "field" ? /field|字段/ : /patient|患者|patient-store|匹配/;
+        return (Array.isArray(logs) ? logs : []).filter(function (item) {
+          return pattern.test(String(item && item.message || ""));
+        }).slice(-10);
+      }
+
+      function compactResult(result) {
+        if (!result || typeof result !== "object") return result || null;
+        return {
+          success: Boolean(result.success),
+          action_type: result.action_type || result.actionType || "",
+          page_before: result.page_before || "",
+          page_after: result.page_after || "",
+          changed_fields: result.changed_fields || result.changedFields || [],
+          navigation_happened: Boolean(result.navigation_happened),
+          observation: result.observation || result.message || "",
+          error: result.error || ""
+        };
+      }
+
+      function extractValueChange(result, key) {
+        if (!result || typeof result !== "object") return null;
+        if (result[key] !== undefined) return result[key];
+        const changed = result.changed_fields || result.changedFields;
+        if (Array.isArray(changed) && changed[0] && changed[0][key] !== undefined) return changed[0][key];
+        return null;
+      }
+
+      function extractAuditId(result) {
+        if (!result || typeof result !== "object") return "";
+        if (result.audit_id) return result.audit_id;
+        if (result.audit && result.audit.audit_id) return result.audit.audit_id;
+        return "";
+      }
+
+      function taskUsageText(task) {
+        return task && task.usage_total ? "token: " + usageValue(task.usage_total, "未返回") : "token: 未返回";
+      }
+
+      function usageBreakdown(task) {
+        const usage = task && (task.usage_total || task.usageLast || task.usage_last) || null;
+        return {
+          prompt: usage && typeof usage.prompt_tokens === "number" ? String(usage.prompt_tokens) : "未返回",
+          completion: usage && typeof usage.completion_tokens === "number" ? String(usage.completion_tokens) : "未返回",
+          total: usageValue(usage, "未返回")
+        };
+      }
+
+      function taskTimingBreakdown(task) {
+        const timing = task && task.timing && typeof task.timing === "object" ? task.timing : {};
+        return {
+          planning: formatElapsed(typeof timing.planning_ms === "number" ? timing.planning_ms : null),
+          action: formatElapsed(typeof timing.action_ms === "number" ? timing.action_ms : null),
+          verify: formatElapsed(typeof timing.verify_ms === "number" ? timing.verify_ms : null)
+        };
+      }
+
+      function stepUsageText(step) {
+        const usage = stepUsageObject(step);
+        if (usage) return "token: " + usageValue(usage, "-");
+        const source = step && (step.usage_source || step.token_source || step.result && (step.result.usage_source || step.result.token_source));
+        if (source === "local_dom" || source === "local" || source === "dom") return "token: 本地执行";
+        return "token: 未返回";
+      }
+
+      function stepUsageObject(step) {
+        if (!step) return null;
+        if (step.usage && typeof step.usage === "object") return step.usage;
+        if (step.result && step.result.usage && typeof step.result.usage === "object") return step.result.usage;
+        if (step.result && step.result.usage_total && typeof step.result.usage_total === "object") return step.result.usage_total;
+        return null;
+      }
+
+      function usageValue(usage, fallback) {
+        if (!usage) return fallback;
+        if (typeof usage.total_tokens === "number") return String(usage.total_tokens);
+        const prompt = Number(usage.prompt_tokens || 0);
+        const completion = Number(usage.completion_tokens || 0);
+        if (prompt || completion) return String(prompt + completion);
+        return fallback;
+      }
+
+      function stepTimingObject(step) {
+        if (!step) return null;
+        if (step.timing && typeof step.timing === "object") return step.timing;
+        if (step.timing_breakdown && typeof step.timing_breakdown === "object") {
+          return { breakdown: step.timing_breakdown, elapsed_ms: step.elapsed_ms };
+        }
+        return null;
+      }
+
+      function stepTimingText(step) {
+        const timing = stepTimingObject(step);
+        const breakdown = timing && timing.breakdown || {};
+        const parts = [
+          ["观察", breakdown.before_observe_ms],
+          ["执行", breakdown.execute_ms],
+          ["校验", breakdown.verify_ms],
+          ["动画", breakdown.animation_ms],
+          ["等待", breakdown.wait_ms]
+        ].filter(function (item) {
+          return typeof item[1] === "number" && item[1] > 0;
+        }).map(function (item) {
+          return item[0] + " " + formatElapsed(item[1]);
+        });
+        return parts.length ? parts.join(" / ") : "未记录";
+      }
+
+      function stepElapsedLabel(step, status) {
+        const normalized = normalizeStatus(status || step && step.status || "pending");
+        if (!step || normalized === "pending" || normalized === "skipped" || normalized === "cancelled") return "未记录";
+        const timing = stepTimingObject(step);
+        if (timing && typeof timing.elapsed_ms === "number") return formatElapsed(timing.elapsed_ms);
+        if (typeof step.elapsed_ms === "number") return formatElapsed(step.elapsed_ms);
+        if (step.finished_at_ms && step.started_at_ms) {
+          return formatElapsed(Math.max(0, Number(step.finished_at_ms) - Number(step.started_at_ms)));
+        }
+        return "未记录";
+      }
+
+      function taskSource(task) {
+        if (!task) return "未记录";
+        const slots = task.slots || {};
+        if (slots.voiceConfirmedTask || slots.voiceTaskText) return "voice_confirmed_task";
+        const progress = Array.isArray(task.progress_messages) ? task.progress_messages : [];
+        if (progress.some(function (item) { return item && item.details && item.details.source === "voice_confirmation"; })) {
+          return "voice_confirmed_task";
+        }
+        return task.source || "backend_llm";
+      }
+
+      function valueLabel(value) {
+        if (value === null || value === undefined || value === "") return "未记录";
+        return String(value);
+      }
+
+      function formatTimestamp(seconds, ms) {
+        const value = Number(ms || (seconds ? seconds * 1000 : 0));
+        if (!value) return "未记录";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "未记录";
+        return date.toLocaleString("zh-CN", { hour12: false });
+      }
+
+      function normalizeStatus(status) {
+        const value = String(status || "pending").toLowerCase();
+        if (value === "completed" || value === "complete" || value === "success") return "completed";
+        if (value === "running" || value === "in_progress") return "running";
+        if (value === "failed" || value === "error") return "failed";
+        if (value === "waiting_user" || value === "blocked_no_llm" || value === "blocked") return "waiting_user";
+        if (value === "cancelled" || value === "canceled") return "cancelled";
+        if (value === "skipped") return "skipped";
+        return "pending";
+      }
+
+      function statusIcon(status) {
+        const icons = { completed: "✓", running: "⏳", failed: "✕", waiting_user: "?", skipped: "-", cancelled: "-", pending: "○" };
+        return icons[normalizeStatus(status)] || "○";
+      }
+
+      function formatElapsed(ms) {
+        if (ms === null || ms === undefined || ms === "") return "未记录";
+        const value = Math.max(0, Number(ms || 0));
+        if (value < 1000) return (value / 1000).toFixed(1) + "s";
+        if (value < 60000) return (value / 1000).toFixed(1) + "s";
+        const totalSeconds = Math.floor(value / 1000);
+        const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+        const seconds = String(totalSeconds % 60).padStart(2, "0");
+        return minutes + ":" + seconds;
+      }
+
+      function escapeHtml(value) {
+        return String(value == null ? "" : value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      render();
+      window.addEventListener("storage", render);
+    })();
+  </script>
+</body>
+</html>
