@@ -1,3 +1,27 @@
+## 2026-06-28 Voice Session Semantic Role Mapping
+
+- Added the voice-session semantic role mapping stage before task organizing.
+- `shared/agent-widget.js`
+  - Click `就诊会话` still only opens voiceView; it does not start mic, ASR, Diart, or semantic mapping.
+  - Click `开始语音任务` initializes semantic mapping state and starts the existing visit-session ASR/Diart path.
+  - New final turns trigger low-frequency, non-blocking `/api/voice/semantic-role-map` only when sample, cooldown, and no-active-mutation guards pass.
+  - Click `停止语音任务` stops mic/ASR/Diart, disables further background triggers, and may run one final semantic mapping without organizing a task.
+  - Click `结束对话并整理任务` performs final semantic mapping, freezes turns, then sends corrected doctor/patient turns to `/api/voice/turns-to-agent-task`.
+  - Manual role corrections and manual swaps are never overwritten by LLM mapping; conflicts are retained as suggestions.
+  - Main input `语音输入` remains dictation-only and never calls semantic role mapping.
+- `backend/main.py`
+  - Added `POST /api/voice/semantic-role-map`.
+  - The endpoint accepts only compact final speaker turns and patient/page context, and returns speaker role mapping only; it never returns page actions or writes patient-store/audit.
+- `tests/e2e/his-agent.spec.ts`
+  - Added coverage for low-frequency trigger, cooldown, stop behavior, final mapping before freeze/organizer, organizer receiving doctor/patient roles, dictation isolation, and manual-priority protection.
+
+Verification in this run:
+- `npm run check:encoding`: passed.
+- Syntax: `node --check shared/agent-widget.js` and `python -m py_compile backend/main.py`: passed.
+- Targeted semantic voice E2E: 5 passed.
+- Default E2E: 85 passed / 3 skipped.
+- `RUN_LLM_E2E=1`: 85 passed / 1 skipped / 2 failed. The two failures are existing live-LLM happy-path mutation cases where the real LLM did not update P001 phone/gender to the expected values; the semantic voice mapping cases passed.
+
 ## 2026-06-28 Port Sync
 
 - Container: `5p9ip18cikv47-0`.
@@ -95,7 +119,7 @@
 
 ### 强制刷新 URL
 
-- `http://10.26.6.8:31451/html/patient-editor.html?patientId=P001&v=20260625-past-history-field-chain`
+- `http://10.26.6.8:31451/html/patient-editor.html?patientId=P001&v=20260628-mic-status-truth`
 
 ## 2026-06-24 Loop Engineering 基础设施
 
@@ -2166,7 +2190,7 @@ http://10.26.6.8:31210/html/login.html?v=20260624-agent-v3-mutation-voice-close-
 Forced refresh URL:
 
 ```text
-http://10.26.6.8:31210/html/login.html?v=20260625-loop-gate
+http://10.26.6.8:31210/html/login.html?v=20260628-mic-status-truth
 ```
 
 ## 2026-06-25 Final Loop / LLM / Port Convergence
@@ -2186,7 +2210,7 @@ http://10.26.6.8:31210/html/login.html?v=20260625-loop-gate
 Forced refresh URL:
 
 ```text
-http://10.26.6.8:31451/html/login.html?v=20260625-final-loop
+http://10.26.6.8:31451/html/login.html?v=20260628-mic-status-truth
 ```
 
 ## 2026-06-25 Task Telemetry Panel / Scroll Finalization
@@ -2204,7 +2228,7 @@ http://10.26.6.8:31451/html/login.html?v=20260625-final-loop
 强制刷新 URL：
 
 ```text
-http://10.26.6.8:31451/html/login.html?v=20260625-task-telemetry-panel
+http://10.26.6.8:31451/html/login.html?v=20260628-mic-status-truth
 ```
 ## 2026-06-25 任务计时、Demo 节奏与步骤滚动修复
 

@@ -251,8 +251,11 @@
     const asrHealthUrl = asrUrl + "/health";
     const diarizationHealthUrl = diarizationUrl + "/diarization/health";
     const asrStatus = await checkAsrHealth(asrHealthUrl);
+    const diarizationHealthPromise = useDiarization
+      ? checkDiarizationHealth(diarizationHealthUrl)
+      : Promise.resolve({ status: "disabled", provider: "disabled", message: "dictation mode" });
     const diarization = useDiarization
-      ? await checkDiarizationHealth(diarizationHealthUrl)
+      ? { status: "connecting", provider: "diarization", message: "starting in background" }
       : { status: "disabled", provider: "disabled", message: "dictation mode" };
     const capabilities = getBrowserCapabilities();
     emit({
@@ -313,23 +316,8 @@
       await waitForWebSocketOpen(runtime.websocket);
       emit({ asrStatus: "connected", asrWebSocketStatus: "connected" });
 
-      if (useDiarization && (diarization.status === "connected" || diarization.status === "available")) {
-        try {
-          runtime.diarizationWebSocket = new WebSocket(toDiarizationWebSocketUrl(diarizationUrl));
-          runtime.diarizationWebSocket.binaryType = "arraybuffer";
-          runtime.diarizationWebSocket.onmessage = handleDiarizationMessage;
-          runtime.diarizationWebSocket.onclose = function () {
-            if (state.recording) emit({ diarizationWebSocketStatus: "closed" });
-          };
-          await waitForWebSocketOpen(runtime.diarizationWebSocket, 2500);
-          emit({ diarizationWebSocketStatus: "connected" });
-        } catch (error) {
-          emit({
-            diarizationWebSocketStatus: "failed",
-            diarizationLastError: error && error.message ? error.message : String(error || "unknown")
-          });
-          runtime.diarizationWebSocket = null;
-        }
+      if (useDiarization) {
+        startDiarizationInBackground(diarizationUrl, diarizationHealthPromise);
       }
 
       emit({
@@ -374,6 +362,14 @@
   }
 
   async function stop(options) {
+    stopMediaTracksNow();
+    emit({
+      recording: false,
+      voiceInputStatus: "stopping",
+      microphoneStatus: "idle",
+      streamTrackCount: 0,
+      message: "正在停止语音输入..."
+    });
     await cleanup(options || {});
     emit({ recording: false, voiceInputStatus: "idle", asrWebSocketStatus: "idle", message: "语音输入已停止。", asrStatus: state.asrStatus === "connected" ? "connected" : state.asrStatus });
     return getState();
@@ -381,6 +377,7 @@
 
   async function cleanup(options) {
     const settings = options || {};
+    stopMediaTracksNow();
     if (!settings.skipFinal && runtime.websocket && runtime.websocket.readyState === WebSocket.OPEN) {
       try { runtime.websocket.send(JSON.stringify({ type: "end" })); } catch (error) {}
     }
@@ -389,7 +386,6 @@
     }
     if (runtime.processor) runtime.processor.disconnect();
     if (runtime.source) runtime.source.disconnect();
-    if (runtime.mediaStream) runtime.mediaStream.getTracks().forEach(function (track) { track.stop(); });
     if (runtime.audioContext) await runtime.audioContext.close().catch(function () {});
     const websocket = runtime.websocket;
     const diarizationWebSocket = runtime.diarizationWebSocket;
@@ -402,6 +398,52 @@
     if (websocket && websocket.readyState !== WebSocket.CLOSED) websocket.close();
     if (diarizationWebSocket && diarizationWebSocket.readyState !== WebSocket.CLOSED) diarizationWebSocket.close();
     emit({ audioContextState: runtime.audioContext ? runtime.audioContext.state : "closed", streamTrackCount: 0, diarizationWebSocketStatus: "idle" });
+  }
+
+  function stopMediaTracksNow() {
+    if (!runtime.mediaStream || !runtime.mediaStream.getTracks) return;
+    runtime.mediaStream.getTracks().forEach(function (track) {
+      try { track.stop(); } catch (error) {}
+    });
+    emit({
+      microphoneStatus: "idle",
+      streamTrackCount: 0
+    });
+  }
+
+  async function startDiarizationInBackground(diarizationUrl, healthPromise) {
+    try {
+      const diarization = await healthPromise;
+      emit({
+        diarizationStatus: diarization.status,
+        diarizationProvider: diarization.provider,
+        diarizationLastError: diarization.message || ""
+      });
+      if (!runtime.websocket) return;
+      if (diarization.status !== "connected" && diarization.status !== "available") {
+        emit({
+          diarizationWebSocketStatus: "not_started",
+          diarizationLastError: diarization.message || "diarization_unavailable"
+        });
+        return;
+      }
+      runtime.diarizationWebSocket = new WebSocket(toDiarizationWebSocketUrl(diarizationUrl));
+      runtime.diarizationWebSocket.binaryType = "arraybuffer";
+      runtime.diarizationWebSocket.onmessage = handleDiarizationMessage;
+      runtime.diarizationWebSocket.onclose = function () {
+        if (state.recording) emit({ diarizationWebSocketStatus: "closed" });
+      };
+      emit({ diarizationWebSocketStatus: "connecting" });
+      await waitForWebSocketOpen(runtime.diarizationWebSocket, 2500);
+      if (!runtime.websocket) return;
+      emit({ diarizationWebSocketStatus: "connected" });
+    } catch (error) {
+      emit({
+        diarizationWebSocketStatus: "failed",
+        diarizationLastError: error && error.message ? error.message : String(error || "unknown")
+      });
+      runtime.diarizationWebSocket = null;
+    }
   }
 
   function handleAsrMessage(event, settings) {

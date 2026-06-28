@@ -63,4 +63,4 @@ Telemetry must support a postcondition-based verdict. `click dispatched`, HTTP 2
 - Token source is explicit: backend LLM usage shows real totals; deterministic DOM steps show `本地执行`; missing usage shows `未返回`.
 - Default E2E after the final scroll fix: `76 / 0 / 3`.
 - RUN_LLM_E2E latest full run after the final scroll fix: `77 / 1 / 1`; the failing live case was `updates Zhang Wei gender without patient not found @llm`, where the real LLM run did not update gender to `女` within the timeout. A follow-up `--grep @llm` run was skipped by the real LLM availability gate.
-- Current public URL: `http://10.26.6.8:31451/html/login.html?v=20260625-task-telemetry-panel`.
+- Current public URL: `http://10.26.6.8:31451/html/login.html?v=20260628-mic-status-truth`.

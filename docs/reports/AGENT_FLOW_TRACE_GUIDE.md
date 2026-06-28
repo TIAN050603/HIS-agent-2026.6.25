@@ -62,4 +62,4 @@ JSON.parse(localStorage.getItem("hisAgentFlowTrace") || "[]")
 - Flow trace now supports P2 scroll/message evidence in loop artifacts for latest-message visibility, user-scroll preservation, unread prompt, and expanded-step scroll retention.
 - Backend LLM malformed JSON repair is recorded as backend planning behavior; successful repair still returns through normal schema validation before task execution.
 - Current loop evidence: iteration-038 `29 / 0 / 0`.
-- Current forced refresh URL: `http://10.26.6.8:31451/html/login.html?v=20260625-final-loop`.
+- Current forced refresh URL: `http://10.26.6.8:31451/html/login.html?v=20260628-mic-status-truth`.

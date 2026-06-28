@@ -241,7 +241,7 @@ V2/V3 混合执行链路的完成语义进一步收紧：
 
 ## 2026-06-25 Final Loop Design Notes
 
-- The current formal public URL is `http://10.26.6.8:31451/html/login.html?v=20260625-final-loop`.
+- The current formal public URL is `http://10.26.6.8:31451/html/login.html?v=20260628-mic-status-truth`.
 - Planner JSON repair is allowed only as a backend LLM repair call for malformed JSON. It does not create actions locally, does not restore keyword fallback, and must still return through the same JSON schema validation path.
 - Scroll auto-follow is part of the conversation UX contract: when the user is already at the bottom, new Agent output must remain visible; when the user has intentionally scrolled up, the widget preserves that position and shows a new-message prompt.
 - `AgentScrollManager` therefore distinguishes user-scroll preservation from forced bottom alignment and keeps forced auto-follow stable across delayed layout frames.

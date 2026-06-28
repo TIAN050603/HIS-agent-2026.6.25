@@ -12,7 +12,12 @@
   const MAX_PANEL_SIZE = { width: 760, height: 840 };
   const HEALTH_STATUS_TIMEOUT_MS = 3500;
   const LLM_STATUS_TIMEOUT_MS = 5000;
+  const TASK_SUMMARY_TICK_MS = 100;
   const TASK_PANEL_AUTO_COMPACT_MS = 2000;
+  const SEMANTIC_ROLE_COOLDOWN_MS = 10000;
+  const SEMANTIC_ROLE_MIN_NEW_FINAL_TURNS = 2;
+  const SEMANTIC_ROLE_MIN_TURNS_PER_SPEAKER = 2;
+  const SEMANTIC_ROLE_MIN_TEXT_PER_SPEAKER = 10;
   const SAFE_PAGES = {
     login: "login.html",
     dashboard: "dashboard.html",
@@ -65,6 +70,9 @@
     loginMode: "Demo",
     topicPage: 0,
     voiceSessionEnded: false,
+    voiceTurnsFrozen: false,
+    voiceSemanticMapping: null,
+    voiceSemanticSuggestions: [],
     pendingVoicePlan: null,
     recentTaskPanelMinimized: false,
     recentTaskStepsExpanded: false,
@@ -115,6 +123,7 @@
     lastAsrEvent: null,
     lastVoiceAction: "",
     taskSummaryTimer: null,
+    lastTaskSummaryRenderMs: 0,
     taskPanelAutoCompactTimer: null,
     taskPanelManualOverride: false,
     lastTaskPanelTaskId: "",
@@ -123,6 +132,18 @@
     statusRefreshInFlight: false,
     statusRefreshStage: "",
     voicePlanMessage: null,
+    semanticRoleMapping: {
+      initialized: false,
+      inFlight: false,
+      lastMappedAt: 0,
+      lastMappedFinalTurnCount: 0,
+      stopped: true,
+      frozen: false,
+      lastReason: "",
+      lastError: "",
+      lastResult: null,
+      manualEditing: false
+    },
     planningTask: null,
     activeRunId: "",
     hiddenRecentTaskId: "",
@@ -162,6 +183,12 @@
       getConversationTurns: function () {
         return state.speakerTurns.slice();
       },
+      getVoiceSemanticState: function () {
+        return getVoiceSemanticSnapshot();
+      },
+      triggerVoiceSemanticMapping: function (reason, options) {
+        return runSemanticRoleMapping(reason || "debug", options || {});
+      },
       getAgentMessages: function () {
         return state.history.slice(-12);
       },
@@ -185,10 +212,17 @@
       saved.backendUrl = normalizeSavedServiceUrl(saved.backendUrl, DEFAULT_STATE.backendUrl);
       saved.asrUrl = normalizeSavedServiceUrl(saved.asrUrl, DEFAULT_STATE.asrUrl);
       saved.diarizationUrl = normalizeSavedServiceUrl(saved.diarizationUrl, DEFAULT_STATE.diarizationUrl);
+      saved.microphoneStatus = normalizePersistedMicrophoneStatus(saved.microphoneStatus);
       return saved;
     } catch (error) {
       return {};
     }
+  }
+
+  function normalizePersistedMicrophoneStatus(value) {
+    const text = String(value || "").trim().toLowerCase();
+    if (text === "recording" || text === "checking" || text === "stopping") return "unknown";
+    return value;
   }
 
   function normalizeSavedServiceUrl(value, fallback) {
@@ -225,7 +259,7 @@
       launcherPosition: state.launcherPosition,
       backendStatus: state.backendStatus,
       asrStatus: state.asrStatus,
-      microphoneStatus: state.microphoneStatus,
+      microphoneStatus: normalizeMicrophoneStatusForStorage(state.microphoneStatus),
       diarizationStatus: state.diarizationStatus,
       diarizationProvider: state.diarizationProvider,
       diarizationWebSocketStatus: state.diarizationWebSocketStatus,
@@ -235,6 +269,9 @@
       dataSource: state.dataSource,
       loginMode: state.loginMode,
       voiceSessionEnded: Boolean(state.voiceSessionEnded),
+      voiceTurnsFrozen: Boolean(state.voiceTurnsFrozen),
+      voiceSemanticMapping: state.voiceSemanticMapping || null,
+      voiceSemanticSuggestions: Array.isArray(state.voiceSemanticSuggestions) ? state.voiceSemanticSuggestions.slice(-20) : [],
       pendingVoicePlan: state.pendingVoicePlan || null,
       recentTaskPanelMinimized: Boolean(state.recentTaskPanelMinimized),
       recentTaskStepsExpanded: Boolean(state.recentTaskStepsExpanded),
@@ -244,6 +281,12 @@
       lastError: state.lastError
     };
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(serializable));
+  }
+
+  function normalizeMicrophoneStatusForStorage(value) {
+    const text = String(value || "").trim().toLowerCase();
+    if (text === "recording" || text === "checking" || text === "stopping") return "unknown";
+    return value;
   }
 
   function normalizeViewMode(value) {
@@ -1045,7 +1088,8 @@
     try {
       await Promise.allSettled([
         probeHttpViaRuntime((state.backendUrl || DEFAULT_STATE.backendUrl).replace(/\/+$/, "") + "/api/health", "backendStatus", "backend", HEALTH_STATUS_TIMEOUT_MS),
-        probeHttpViaRuntime((state.asrUrl || DEFAULT_STATE.asrUrl).replace(/\/+$/, "") + "/health", "asrStatus", "asr", HEALTH_STATUS_TIMEOUT_MS)
+        probeHttpViaRuntime((state.asrUrl || DEFAULT_STATE.asrUrl).replace(/\/+$/, "") + "/health", "asrStatus", "asr", HEALTH_STATUS_TIMEOUT_MS),
+        probeDiarization()
       ]);
       runtime.statusRefreshStage = "llm_checking";
       renderStatusView("llm_checking");
@@ -1069,6 +1113,7 @@
     state.llmStatus = "checking";
     state.qwenStatus = "checking";
     state.agentMode = "checking";
+    state.diarizationStatus = "checking";
     runtime.serviceDetails.backend = {
       url: (state.backendUrl || DEFAULT_STATE.backendUrl).replace(/\/+$/, "") + "/api/health",
       status: "checking",
@@ -1081,6 +1126,11 @@
     };
     runtime.serviceDetails.llm = {
       url: (state.backendUrl || DEFAULT_STATE.backendUrl).replace(/\/+$/, "") + "/api/llm/test",
+      status: "checking",
+      error: ""
+    };
+    runtime.serviceDetails.diarization = {
+      url: ((state.diarizationUrl || DEFAULT_STATE.diarizationUrl || state.backendUrl || DEFAULT_STATE.backendUrl).replace(/\/+$/, "")) + "/diarization/health",
       status: "checking",
       error: ""
     };
@@ -1108,18 +1158,34 @@
         { label: "Agent", value: state.agentMode },
         { label: "ASR 服务", value: state.asrStatus },
         { label: "麦克风", value: state.microphoneStatus },
-        { label: "说话人分离", value: state.diarizationProvider + " / " + state.diarizationStatus },
-        { label: "数据源", value: state.dataSource }
+        { label: "说话人分离", value: connectionDiarizationStatusValue() }
       ],
       urls: {
         backendHealth: (state.backendUrl || DEFAULT_STATE.backendUrl).replace(/\/+$/, "") + "/api/health",
         llmTest: (state.backendUrl || DEFAULT_STATE.backendUrl).replace(/\/+$/, "") + "/api/llm/test",
-        asrHealth: (state.asrUrl || DEFAULT_STATE.asrUrl).replace(/\/+$/, "") + "/health"
+        asrHealth: (state.asrUrl || DEFAULT_STATE.asrUrl).replace(/\/+$/, "") + "/health",
+        diarizationHealth: ((state.diarizationUrl || DEFAULT_STATE.diarizationUrl || state.backendUrl || DEFAULT_STATE.backendUrl).replace(/\/+$/, "")) + "/diarization/health"
       },
       serviceDetails: runtime.serviceDetails,
       lastError: state.lastError || "",
       checkedAt: new Date().toISOString()
     };
+  }
+
+  function connectionDiarizationStatusValue() {
+    const details = runtime.serviceDetails && runtime.serviceDetails.diarization || {};
+    const status = String(details.status || state.diarizationStatus || "").trim();
+    const provider = String(state.diarizationProvider || "").trim().toLowerCase();
+    if (status === "connected" || status === "available") {
+      return "connected";
+    }
+    if (provider && provider !== "manual" && status === "checking") {
+      return "checking";
+    }
+    if (provider && provider !== "manual" && !status) {
+      return "connected";
+    }
+    return status || "unknown";
   }
 
   function renderStatusView(stage) {
@@ -1626,8 +1692,7 @@
     elements.asrStatus.innerHTML = [
       connectionChip("ASR 服务", state.asrStatus),
       connectionChip("麦克风", state.microphoneStatus),
-      connectionChip("说话人分离", state.diarizationProvider + " / " + state.diarizationStatus),
-      connectionChip("Data", state.dataSource, "neutral")
+      connectionChip("说话人分离", connectionDiarizationStatusValue())
     ].join("");
     renderServiceDiagnostics();
     renderLauncherStatus();
@@ -1662,7 +1727,7 @@
 
   function renderVoiceSessionStatus() {
     if (!elements.voiceStatusCard) return;
-    const microphone = state.microphoneStatus || "unknown";
+    const microphone = normalizedVoiceMicrophoneStatus();
     let notice = "";
     if (microphone === "checking") {
       notice = "正在请求麦克风权限...";
@@ -1713,11 +1778,25 @@
 
   function voiceMicrophoneLabel(value) {
     const text = connectionStatusText(value);
-    if (runtime.recording && runtime.voiceMode === "session") return "录音中";
-    if (text === "recording") return "录音中";
+    if (isActualVoiceRecording()) return "录音中";
     if (text === "permission_denied") return "不可用";
     if (text === "not_found" || text === "device_busy" || text === "unavailable" || text === "unavailable_api") return "不可用";
     return "待机";
+  }
+
+  function normalizedVoiceMicrophoneStatus() {
+    const raw = String(state.microphoneStatus || "unknown").trim().toLowerCase();
+    if (raw === "recording" && !isActualVoiceRecording()) {
+      return state.microphonePermission === "granted" ? "permission_granted" : "unknown";
+    }
+    if ((raw === "checking" || raw === "stopping") && !runtime.recording) return "unknown";
+    return state.microphoneStatus || "unknown";
+  }
+
+  function isActualVoiceRecording() {
+    const diagnostics = runtime.lastAsrEvent && runtime.lastAsrEvent.voiceDiagnostic ? runtime.lastAsrEvent.voiceDiagnostic : {};
+    const trackCount = Number(diagnostics.streamTrackCount || 0);
+    return Boolean(runtime.recording && trackCount > 0);
   }
 
   function voiceAsrLabel(asrStatus, socketStatus) {
@@ -2014,16 +2093,41 @@
       window.clearInterval(runtime.taskSummaryTimer);
     }
     runtime.taskSummaryTimer = window.setInterval(function () {
+      const now = Date.now();
       const summary = window.AgentTaskOrchestrator && window.AgentTaskOrchestrator.getSummary
         ? window.AgentTaskOrchestrator.getSummary()
         : null;
       if (summary && summary.hasActiveTask) {
+        refreshCurrentTaskElapsed(summary);
         const details = elements.currentTaskCard && elements.currentTaskCard.querySelector(".his-agent-current-steps");
         const pinned = runtime.currentTaskStepLock && runtime.currentTaskStepLock.userPinnedStepScroll;
+        if (now - Number(runtime.lastTaskSummaryRenderMs || 0) < 250) return;
         if (details && details.open && pinned) return;
         renderTaskSummary();
+        runtime.lastTaskSummaryRenderMs = now;
+        return;
       }
-    }, 250);
+      if (runtime.planningTask && state.viewMode === "chat") {
+        refreshCurrentTaskElapsed(null);
+        if (now - Number(runtime.lastTaskSummaryRenderMs || 0) >= 250) {
+          renderTaskSummary();
+          runtime.lastTaskSummaryRenderMs = now;
+        }
+      }
+    }, TASK_SUMMARY_TICK_MS);
+  }
+
+  function refreshCurrentTaskElapsed(summary) {
+    if (!elements.currentTaskCard || elements.currentTaskCard.hidden) return;
+    const target = elements.currentTaskCard.querySelector(".his-agent-current-elapsed");
+    if (!target) return;
+    let elapsedMs = 0;
+    if (summary && summary.hasActiveTask) {
+      elapsedMs = summary.elapsedMs || 0;
+    } else if (runtime.planningTask) {
+      elapsedMs = Math.max(0, Date.now() - Number(runtime.planningTask.startedAtMs || Date.now()));
+    }
+    target.textContent = "耗时：" + formatElapsed(elapsedMs);
   }
 
   function renderTaskDetails(summary) {
@@ -2071,6 +2175,7 @@
         '  <span class="his-agent-current-compact-title">' + escapeHtml(summary.cardTitle || (summary.isRecentTask ? "最近任务" : "当前任务")) + '：</span>',
         '  <strong>' + escapeHtml(summary.objective || summary.currentStep || "LLM 任务") + '</strong>',
         '  <span class="his-agent-current-compact-meta">' + escapeHtml(taskStatusLabel(status)) + ' ' + escapeHtml(progress) + ' ' + escapeHtml(formatElapsed(summary.elapsedMs || 0)) + '</span>',
+        summary.lastError ? '  <span class="his-agent-current-compact-error">' + escapeHtml(summary.lastError) + '</span>' : "",
         '  <button type="button" class="his-agent-link-button" data-agent-action="expand-task-panel">展开</button>',
         "</div>"
       ].join("");
@@ -2085,7 +2190,7 @@
       '<div class="his-agent-current-meta">',
       '  <span>状态：' + escapeHtml(taskStatusLabel(status)) + '</span>',
       '  <span>进度：' + escapeHtml(progress) + '</span>',
-      '  <span>耗时：' + escapeHtml(formatElapsed(summary.elapsedMs || 0)) + '</span>',
+      '  <span class="his-agent-current-elapsed">耗时：' + escapeHtml(formatElapsed(summary.elapsedMs || 0)) + '</span>',
       '  <span>' + escapeHtml(taskUsageText(summary)) + '</span>',
       "</div>",
       '<div class="his-agent-current-narration">Agent：' + escapeHtml(buildTaskNarration(summary, status)) + '</div>',
@@ -3331,7 +3436,6 @@
 
   async function handleCommand(command, source, options) {
     const settings = options || {};
-    const taskStartedAtMs = Date.now();
     const route = routeCurrentInput(command, source === "voice_confirmed_task" ? "voice_session_task" : "text_task");
     if (settings.taskContract) {
       route.task_contract = settings.taskContract;
@@ -3373,6 +3477,7 @@
       return { accepted: false, success: false, message: message };
     }
     setStatus("LLM 已连接，正在规划任务...");
+    const taskStartedAtMs = Date.now();
     const taskResult = await window.AgentTaskOrchestrator.startTask(command, {
       backendUrl: (state.backendUrl || DEFAULT_STATE.backendUrl).replace(/\/+$/, ""),
       agentMessages: state.history.slice(-12),
@@ -3463,7 +3568,7 @@
       '<div class="his-agent-current-meta">',
       '  <span>状态：planning</span>',
       '  <span>进度：0/0</span>',
-      '  <span>耗时：' + escapeHtml(formatElapsed(Math.max(0, Date.now() - Number(task.startedAtMs || Date.now())))) + '</span>',
+      '  <span class="his-agent-current-elapsed">耗时：' + escapeHtml(formatElapsed(Math.max(0, Date.now() - Number(task.startedAtMs || Date.now())))) + '</span>',
       '  <span>token: 未返回</span>',
       "</div>",
       '<div class="his-agent-current-narration">Agent：我正在理解这条任务，并向后端 LLM 请求结构化计划。</div>',
@@ -3500,6 +3605,8 @@
     if (runtime.recording) {
       await stopActiveVoice("draft_voice_task");
     }
+    await runFinalSemanticRoleMapping("end_voice_conversation");
+    freezeVoiceTurnsForReview();
     state.voiceSessionEnded = Boolean(state.speakerTurns.length);
     const finalTurns = finalSpeakerTurns();
     if (!finalTurns.length) {
@@ -3724,9 +3831,10 @@
 
   function syncVoiceState(voice) {
     if (!voice) return;
+    runtime.recording = Boolean(voice.recording);
     state.asrStatus = voice.asrStatus || state.asrStatus;
     state.asrWebSocketStatus = voice.asrWebSocketStatus || state.asrWebSocketStatus || "idle";
-    state.microphoneStatus = voice.microphoneStatus || voice.permissionState || voice.microphonePermission || state.microphoneStatus;
+    state.microphoneStatus = normalizeLiveMicrophoneStatus(voice) || state.microphoneStatus;
     state.diarizationStatus = voice.diarizationStatus || state.diarizationStatus || "unknown";
     state.diarizationProvider = voice.diarizationProvider || state.diarizationProvider || "manual";
     state.diarizationWebSocketStatus = voice.diarizationWebSocketStatus || state.diarizationWebSocketStatus || "idle";
@@ -3815,6 +3923,17 @@
       }
     ];
     state.voiceSessionEnded = true;
+    state.voiceTurnsFrozen = false;
+    state.voiceSemanticMapping = {
+      mapping: { speaker_0: "doctor", speaker_1: "patient" },
+      source: "mock_manual_demo",
+      mappedAt: new Date().toISOString(),
+      confidence: 1,
+      reason_summary: "模拟就诊会话使用预设医生/患者角色。"
+    };
+    state.voiceSemanticSuggestions = [];
+    runtime.semanticRoleMapping.frozen = false;
+    runtime.semanticRoleMapping.stopped = true;
     runtime.lastAsrEvent = { type: "mock", source: "mock_manual_demo", timestamp: new Date().toISOString() };
     renderTurns();
     saveState();
@@ -3827,6 +3946,7 @@
       setStatus("当前没有 turns 可以交换。", true);
       return;
     }
+    markSemanticRoleManualEdit();
     state.speakerTurns = state.speakerTurns.map(function (turn) {
       if (turn.role !== "doctor" && turn.role !== "patient") {
         return Object.assign({}, turn, { role_source: "manual_swapped" });
@@ -3847,13 +3967,32 @@
   function clearVoiceTurns() {
     state.speakerTurns = [];
     state.voiceSessionEnded = false;
+    state.voiceTurnsFrozen = false;
+    state.voiceSemanticMapping = null;
+    state.voiceSemanticSuggestions = [];
     state.pendingVoicePlan = null;
+    runtime.semanticRoleMapping.initialized = false;
+    runtime.semanticRoleMapping.inFlight = false;
+    runtime.semanticRoleMapping.lastMappedAt = 0;
+    runtime.semanticRoleMapping.lastMappedFinalTurnCount = 0;
+    runtime.semanticRoleMapping.stopped = true;
+    runtime.semanticRoleMapping.frozen = false;
+    runtime.semanticRoleMapping.lastResult = null;
     runtime.lastAsrEvent = null;
     elements.voiceDraft.innerHTML = "";
     renderTurns();
     setVoiceActionAvailability();
     saveState();
     setStatus("已清空当前语音记录。");
+  }
+
+  function normalizeLiveMicrophoneStatus(voice) {
+    const status = voice.microphoneStatus || voice.permissionState || voice.microphonePermission || "";
+    const trackCount = Number(voice.streamTrackCount || 0);
+    if (status === "recording" && (!voice.recording || trackCount <= 0)) {
+      return voice.microphonePermission === "granted" || voice.permissionState === "granted" ? "permission_granted" : "unknown";
+    }
+    return status;
   }
 
   function fillVoiceTurnsIntoInput() {
@@ -3884,6 +4023,288 @@
         is_final: true
       };
     });
+  }
+
+  function finalVoiceTurnsRaw() {
+    return state.speakerTurns.filter(isFinalTextTurn).slice(-40);
+  }
+
+  function initializeSemanticRoleMapping() {
+    const currentMapping = currentSpeakerRoleMapping();
+    state.voiceTurnsFrozen = false;
+    state.voiceSemanticMapping = {
+      mapping: currentMapping,
+      source: state.voiceSemanticMapping && state.voiceSemanticMapping.source || "default_mapping",
+      mappedAt: state.voiceSemanticMapping && state.voiceSemanticMapping.mappedAt || "",
+      confidence: state.voiceSemanticMapping && state.voiceSemanticMapping.confidence || 0,
+      reason_summary: state.voiceSemanticMapping && state.voiceSemanticMapping.reason_summary || ""
+    };
+    runtime.semanticRoleMapping.initialized = true;
+    runtime.semanticRoleMapping.inFlight = false;
+    runtime.semanticRoleMapping.lastMappedAt = 0;
+    runtime.semanticRoleMapping.lastMappedFinalTurnCount = 0;
+    runtime.semanticRoleMapping.stopped = false;
+    runtime.semanticRoleMapping.frozen = false;
+    runtime.semanticRoleMapping.lastReason = "";
+    runtime.semanticRoleMapping.lastError = "";
+    runtime.semanticRoleMapping.lastResult = null;
+  }
+
+  function stopSemanticRoleMappingTriggers() {
+    runtime.semanticRoleMapping.stopped = true;
+  }
+
+  function freezeVoiceTurnsForReview() {
+    state.voiceTurnsFrozen = true;
+    runtime.semanticRoleMapping.frozen = true;
+    runtime.semanticRoleMapping.stopped = true;
+  }
+
+  function getVoiceSemanticSnapshot() {
+    return {
+      initialized: Boolean(runtime.semanticRoleMapping.initialized),
+      inFlight: Boolean(runtime.semanticRoleMapping.inFlight),
+      stopped: Boolean(runtime.semanticRoleMapping.stopped),
+      frozen: Boolean(state.voiceTurnsFrozen || runtime.semanticRoleMapping.frozen),
+      lastMappedAt: runtime.semanticRoleMapping.lastMappedAt || 0,
+      lastMappedFinalTurnCount: runtime.semanticRoleMapping.lastMappedFinalTurnCount || 0,
+      lastReason: runtime.semanticRoleMapping.lastReason || "",
+      lastError: runtime.semanticRoleMapping.lastError || "",
+      mapping: currentSpeakerRoleMapping(),
+      persisted: state.voiceSemanticMapping || null,
+      suggestions: Array.isArray(state.voiceSemanticSuggestions) ? state.voiceSemanticSuggestions.slice(-10) : [],
+      finalTurnCount: finalVoiceTurnsRaw().length
+    };
+  }
+
+  function currentSpeakerRoleMapping() {
+    const mapping = Object.assign({
+      speaker_0: "doctor",
+      speaker_1: "patient"
+    }, state.voiceSemanticMapping && state.voiceSemanticMapping.mapping || {});
+    state.speakerTurns.forEach(function (turn) {
+      const speakerId = normalizeSpeakerId(turn && turn.speaker_id);
+      if (!speakerId || mapping[speakerId]) {
+        return;
+      }
+      if (turn.role === "doctor" || turn.role === "patient") {
+        mapping[speakerId] = turn.role;
+      }
+    });
+    Object.keys(mapping).forEach(function (speakerId) {
+      if (mapping[speakerId] !== "doctor" && mapping[speakerId] !== "patient" && mapping[speakerId] !== "unknown") {
+        delete mapping[speakerId];
+      }
+    });
+    return mapping;
+  }
+
+  function compactSemanticRoleTurns(turns) {
+    return (Array.isArray(turns) ? turns : []).filter(isFinalTextTurn).slice(-40).map(function (turn) {
+      return {
+        speaker_id: normalizeSpeakerId(turn.speaker_id || turn.raw_speaker_id) || "",
+        role: normalizeRole(turn.role),
+        role_label: roleLabel(turn.role),
+        role_source: turn.role_source || "",
+        text: compactText(turn.text || "", 320),
+        is_final: true
+      };
+    }).filter(function (turn) {
+      return turn.speaker_id && turn.text;
+    });
+  }
+
+  function semanticRoleStats(turns) {
+    return compactSemanticRoleTurns(turns).reduce(function (stats, turn) {
+      const current = stats[turn.speaker_id] || { count: 0, textLength: 0 };
+      current.count += 1;
+      current.textLength += String(turn.text || "").length;
+      stats[turn.speaker_id] = current;
+      return stats;
+    }, {});
+  }
+
+  function hasSemanticRoleSample(turns) {
+    const stats = semanticRoleStats(turns);
+    const speakers = Object.keys(stats);
+    if (speakers.length < 2) {
+      return false;
+    }
+    return speakers.every(function (speakerId) {
+      return stats[speakerId].count >= SEMANTIC_ROLE_MIN_TURNS_PER_SPEAKER
+        && stats[speakerId].textLength >= SEMANTIC_ROLE_MIN_TEXT_PER_SPEAKER;
+    });
+  }
+
+  function hasActivePageMutationStep() {
+    const summary = window.AgentTaskOrchestrator && window.AgentTaskOrchestrator.getSummary
+      ? window.AgentTaskOrchestrator.getSummary()
+      : null;
+    if (!summary || !summary.hasActiveTask) {
+      return false;
+    }
+    const status = String(summary.status || "").toLowerCase();
+    return status === "running" || status === "planning";
+  }
+
+  function shouldTriggerSemanticRoleMapping(turns, options) {
+    const settings = options || {};
+    const finalTurns = turns || finalVoiceTurnsRaw();
+    if (!hasSemanticRoleSample(finalTurns)) {
+      return false;
+    }
+    if (runtime.semanticRoleMapping.inFlight) {
+      return false;
+    }
+    if (!settings.allowWhenStopped && runtime.semanticRoleMapping.stopped) {
+      return false;
+    }
+    if (!settings.force && (state.voiceTurnsFrozen || runtime.semanticRoleMapping.frozen)) {
+      return false;
+    }
+    if (!settings.force && runtime.semanticRoleMapping.manualEditing) {
+      return false;
+    }
+    if (!settings.force && hasActivePageMutationStep()) {
+      return false;
+    }
+    if (settings.force) {
+      return true;
+    }
+    const now = Date.now();
+    if (runtime.semanticRoleMapping.lastMappedAt && now - runtime.semanticRoleMapping.lastMappedAt < SEMANTIC_ROLE_COOLDOWN_MS) {
+      return false;
+    }
+    if (finalTurns.length - Number(runtime.semanticRoleMapping.lastMappedFinalTurnCount || 0) < SEMANTIC_ROLE_MIN_NEW_FINAL_TURNS) {
+      return false;
+    }
+    return true;
+  }
+
+  function maybeTriggerSemanticRoleMapping(reason) {
+    const finalTurns = finalVoiceTurnsRaw();
+    if (!shouldTriggerSemanticRoleMapping(finalTurns)) {
+      return false;
+    }
+    runSemanticRoleMapping(reason || "final_turn_added", { background: true }).catch(function () {
+      return null;
+    });
+    return true;
+  }
+
+  async function runFinalSemanticRoleMapping(reason) {
+    return runSemanticRoleMapping(reason || "final_semantic_mapping", {
+      force: true,
+      allowWhenStopped: true,
+      final: true
+    });
+  }
+
+  async function runSemanticRoleMapping(reason, options) {
+    const settings = options || {};
+    const finalTurns = finalVoiceTurnsRaw();
+    if (!shouldTriggerSemanticRoleMapping(finalTurns, settings)) {
+      return {
+        ok: false,
+        skipped: true,
+        reason: "sample_or_state_not_ready",
+        mapping: currentSpeakerRoleMapping()
+      };
+    }
+    runtime.semanticRoleMapping.inFlight = true;
+    runtime.semanticRoleMapping.lastReason = reason || "";
+    runtime.semanticRoleMapping.lastError = "";
+    try {
+      const result = await requestSemanticRoleMapping(finalTurns, reason || "semantic_role_mapping", settings);
+      runtime.semanticRoleMapping.lastMappedAt = Date.now();
+      runtime.semanticRoleMapping.lastMappedFinalTurnCount = finalTurns.length;
+      runtime.semanticRoleMapping.lastResult = result || null;
+      if (result && result.ok && result.mapping) {
+        applySemanticRoleMapping(result, reason || "semantic_role_mapping");
+      }
+      return result;
+    } catch (error) {
+      runtime.semanticRoleMapping.lastError = error && error.message ? error.message : String(error || "semantic role mapping failed");
+      return {
+        ok: false,
+        error: runtime.semanticRoleMapping.lastError,
+        mapping: currentSpeakerRoleMapping()
+      };
+    } finally {
+      runtime.semanticRoleMapping.inFlight = false;
+    }
+  }
+
+  async function requestSemanticRoleMapping(turns, reason, options) {
+    const patientContext = currentPatientContext();
+    const endpoint = (state.backendUrl || DEFAULT_STATE.backendUrl).replace(/\/+$/, "") + "/api/voice/semantic-role-map";
+    const response = await fetchWithTimeout(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify({
+        patient_context: patientContext,
+        current_page_type: getPageType(),
+        current_patient_id: patientContext.patientId || "",
+        current_mapping: currentSpeakerRoleMapping(),
+        turns: compactSemanticRoleTurns(turns),
+        reason: reason || "",
+        final: Boolean(options && options.final)
+      })
+    }, 6000);
+    return response.json();
+  }
+
+  function applySemanticRoleMapping(result, reason) {
+    const mapping = result && result.mapping && typeof result.mapping === "object" ? result.mapping : {};
+    const suggestions = Array.isArray(result && result.suggestions) ? result.suggestions.slice(0, 8) : [];
+    const conflicts = [];
+    let changed = false;
+    state.speakerTurns = state.speakerTurns.map(function (turn) {
+      const speakerId = normalizeSpeakerId(turn && (turn.speaker_id || turn.raw_speaker_id));
+      const nextRole = speakerId ? mapping[speakerId] : "";
+      if (nextRole !== "doctor" && nextRole !== "patient") {
+        return turn;
+      }
+      if (isManualRoleSource(turn.role_source)) {
+        if (turn.role !== nextRole) {
+          conflicts.push({
+            speaker_id: speakerId,
+            current_role: turn.role,
+            suggested_role: nextRole,
+            role_source: turn.role_source
+          });
+        }
+        return turn;
+      }
+      if (turn.role === nextRole && turn.role_source === "llm_semantic_mapping") {
+        return turn;
+      }
+      changed = true;
+      return Object.assign({}, turn, {
+        role: nextRole,
+        role_label: roleLabel(nextRole),
+        role_source: "llm_semantic_mapping",
+        semantic_role_confidence: result.confidence === undefined ? null : result.confidence,
+        semantic_role_reason: reason || ""
+      });
+    });
+    state.voiceSemanticMapping = {
+      mapping: Object.assign(currentSpeakerRoleMapping(), mapping),
+      source: "llm_semantic_mapping",
+      mappedAt: new Date().toISOString(),
+      confidence: result.confidence === undefined ? 0 : result.confidence,
+      reason_summary: result.reason_summary || ""
+    };
+    state.voiceSemanticSuggestions = suggestions.concat(conflicts).slice(-20);
+    if (changed) {
+      renderTurns();
+      setVoiceActionAvailability();
+    }
+    saveState();
+  }
+
+  function isManualRoleSource(value) {
+    return value === "manual_corrected" || value === "manual_swapped";
   }
 
   function isFinalTextTurn(turn) {
@@ -4238,6 +4659,7 @@
       return;
     }
     runtime.voiceMode = "session";
+    initializeSemanticRoleMapping();
     updateVoiceButtons();
     setStatus("正在启动就诊会话语音任务。");
     const voice = await window.HisVoiceInputController.start({
@@ -4257,10 +4679,14 @@
         runtime.lastAsrEvent = Object.assign({}, data || runtime.lastAsrEvent || {}, {
           timestamp: new Date().toISOString()
         });
+        const beforeFinalCount = finalVoiceTurnsRaw().length;
         state.speakerTurns = mergeIncomingSpeakerTurns(state.speakerTurns, turns);
         renderTurns();
         setVoiceActionAvailability();
         saveState();
+        if (finalVoiceTurnsRaw().length > beforeFinalCount) {
+          maybeTriggerSemanticRoleMapping("final_turn_added");
+        }
       }
     });
     runtime.recording = Boolean(voice.recording);
@@ -4269,6 +4695,7 @@
       transitionConversation("voice_recording", "start_visit_recording");
     } else {
       runtime.voiceMode = "";
+      stopSemanticRoleMappingTriggers();
       transitionConversation("voice_idle", "visit_recording_not_started");
     }
     syncVoiceState(voice);
@@ -4288,9 +4715,18 @@
     const voice = await window.HisVoiceInputController.stop({ reason: reason || "manual_stop" });
     runtime.recording = false;
     runtime.voiceMode = "";
+    syncVoiceState(voice);
+    updateVoiceButtons();
+    renderServiceStatus();
+    setVoiceActionAvailability();
+    renderVoiceSessionStatus();
     if (previousMode === "session") {
+      stopSemanticRoleMappingTriggers();
       state.voiceSessionEnded = Boolean(state.speakerTurns.length);
       transitionConversation(state.voiceSessionEnded ? "voice_review" : "voice_idle", "stop_visit_recording");
+      if (reason !== "draft_voice_task") {
+        await runFinalSemanticRoleMapping("stop_session");
+      }
     }
     syncVoiceState(voice);
     updateVoiceButtons();
@@ -4543,6 +4979,7 @@
     if (!turn) {
       return;
     }
+    markSemanticRoleManualEdit();
     turn.role = normalizeRole(role);
     turn.role_label = roleLabel(turn.role);
     turn.role_source = "manual_corrected";
@@ -4904,6 +5341,13 @@
     };
     renderServiceStatus();
     saveState();
+  }
+
+  function markSemanticRoleManualEdit() {
+    runtime.semanticRoleMapping.manualEditing = true;
+    window.setTimeout(function () {
+      runtime.semanticRoleMapping.manualEditing = false;
+    }, 1500);
   }
 
   async function probeDiarization() {

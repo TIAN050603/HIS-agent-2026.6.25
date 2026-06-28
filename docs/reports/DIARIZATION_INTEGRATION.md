@@ -1,5 +1,20 @@
 # Diart Speaker Diarization Integration
 
+## 2026-06-28 Semantic Role Mapping In Voice Session
+
+- Scope: ASR and Diart installation/runtime are unchanged.
+- Correct flow:
+  - `就诊会话` only opens voiceView.
+  - `开始语音任务` starts mic, ASR, Diart, and initializes semantic role mapping state.
+  - New final turns may trigger low-frequency async LLM speaker role mapping when both speakers have enough final text and the 10s cooldown has elapsed.
+  - This semantic role mapping does not block ASR/Diart and never returns or executes page actions.
+  - `停止语音任务` stops mic/ASR/Diart and disables background triggers; it may run one final semantic mapping but does not organize a task.
+  - `结束对话并整理任务` runs final semantic mapping, freezes turns, and only then sends corrected doctor/patient turns to the task organizer.
+- Manual priority:
+  - `manual_corrected` and `manual_swapped` turns are never overwritten by LLM semantic mapping.
+  - LLM conflicts against manual roles are stored as suggestions only.
+- Main input voice dictation is excluded from this module.
+
 ## 2026-06-25 Voice Turns To Field Mutation Fix
 
 - Scope: this update did not change ASR, Diart installation, diarization runtime, or the main ASR pipeline.
@@ -292,4 +307,4 @@ Verification added:
 - voiceView 仍可在 Diart 不可用时使用 manual turns，但 UI 不会把 manual turns 标记为 automatic diarization。
 - `RUN_LLM_E2E=1` 全量套件已覆盖 voice turns -> editable task -> existing Agent taskflow，并通过 `75 / 0 / 1`。
 - full loop iteration-038 已覆盖 voice task confirmation cases，结果 `29 / 0 / 0`。
-- 当前强制刷新 URL：`http://10.26.6.8:31451/html/login.html?v=20260625-final-loop`。
+- 当前强制刷新 URL：`http://10.26.6.8:31451/html/login.html?v=20260628-mic-status-truth`。

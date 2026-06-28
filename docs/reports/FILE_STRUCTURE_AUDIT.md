@@ -11,7 +11,7 @@
 
 这些文件由正式 `html/` 页面引用，位于 `ui-action-feedback.js` 之后、`agent-task-orchestrator.js` 之前。它们只处理输入路由、状态记录、task schema 和滚动，不执行页面动作，不写 patient-store，不替代 backend LLM planner。
 
-当前端口映射：frontend `5500->31875`，backend `8000->31593`，LLM service `8001->31893`，ASR `8010->31478`。
+当前端口映射：frontend `5500->31875`，backend `8000->31416`，LLM service `8001->31139`，ASR `8010->31478`。
 
 本轮未新增根目录重复 HTML/JS，未删除或移动任何文件，未修改 `universal_agent_backup_*`。
 

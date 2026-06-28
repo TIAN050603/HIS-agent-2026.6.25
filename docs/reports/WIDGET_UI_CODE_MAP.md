@@ -943,3 +943,17 @@ Login idempotency:
   - `.current-step` / `.agent-step-pulse` 标记当前执行步骤；`.restoring-scroll` 隐藏首帧恢复过程。
 - `tests/e2e/his-agent.spec.ts`
   - 覆盖 live timer/freeze、step pulse/scroll、demo pacing fast mode、chat scroll instant restore。
+## 2026-06-28 Voice Session Semantic Role Mapping
+
+- `shared/agent-widget.js`
+  - `SEMANTIC_ROLE_COOLDOWN_MS` / `SEMANTIC_ROLE_MIN_*`: low-frequency semantic mapping guards.
+  - `initializeSemanticRoleMapping()`: runs when `开始语音任务` starts; `就诊会话` alone does not call it.
+  - `maybeTriggerSemanticRoleMapping()` / `runSemanticRoleMapping()`: async mapping after new final turns; does not block ASR/Diart.
+  - `runFinalSemanticRoleMapping()`: used by stop and end-conversation flows.
+  - `freezeVoiceTurnsForReview()`: freezes corrected turns before task organizing.
+  - `applySemanticRoleMapping()`: updates only non-manual turns; `manual_corrected` and `manual_swapped` remain authoritative.
+  - `finalSpeakerTurns()`: task organizer payload contains only doctor/patient role text, not raw speaker/source/debug.
+- `backend/main.py`
+  - `POST /api/voice/semantic-role-map`: returns speaker role mapping only; no page action or business writes.
+- `tests/e2e/his-agent.spec.ts`
+  - Covers low-frequency trigger, cooldown, stop, final mapping + freeze, dictation isolation, and manual-priority protection.

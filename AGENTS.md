@@ -61,10 +61,10 @@
 
 ## 7. 每轮完成后更新
 
-- `IMPLEMENTATION_REPORT.md`
-- 如涉及旧功能迁移，更新 `OLD_AGENT_MIGRATION_AUDIT.md`
-- 如涉及废代码，更新 `DEAD_CODE_REVIEW.md`
-- 如新增已知问题，更新 `PROJECT_BACKLOG.md` 或 `KNOWN_ISSUES.md`
+- `docs/reports/IMPLEMENTATION_REPORT.md`
+- 如涉及旧功能迁移，更新 `docs/reports/OLD_AGENT_MIGRATION_AUDIT.md`
+- 如涉及废代码，更新 `docs/reports/DEAD_CODE_REVIEW.md`
+- 如新增已知问题，更新 `docs/reports/PROJECT_BACKLOG.md` 或 `KNOWN_ISSUES.md`
 
 ## 8. Loop Engineering 规则
 

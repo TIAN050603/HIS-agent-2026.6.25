@@ -54,7 +54,7 @@ Full all-patient all-field mutation execution is intentionally not claimed compl
 - Full loop iteration 038: `29 / 0 / 0`.
 - Default E2E: `73 / 0 / 3`.
 - RUN_LLM_E2E: `75 / 0 / 1`; both live `@llm` mutation cases executed and passed. The remaining skipped case is optional fake microphone.
-- Forced refresh URL: `http://10.26.6.8:31451/html/login.html?v=20260625-final-loop`.
+- Forced refresh URL: `http://10.26.6.8:31451/html/login.html?v=20260628-mic-status-truth`.
 
 ## 2026-06-25 Task Telemetry Panel Final Evidence
 
@@ -63,7 +63,7 @@ Full all-patient all-field mutation execution is intentionally not claimed compl
 - Default E2E after the final scroll-manager fix: `76 / 0 / 3`.
 - RUN_LLM_E2E latest full run after the final scroll-manager fix: `77 / 1 / 1`; the live gender-update case failed because the real LLM run did not produce the expected page mutation within 90000ms. A follow-up `--grep @llm` run skipped both live cases through the real LLM availability gate.
 - Scroll manager now treats user-scrolled-away as a hard boundary for delayed automatic bottom-follow callbacks. User-clicked unread prompt can still scroll to the bottom.
-- Forced refresh URL: `http://10.26.6.8:31451/html/login.html?v=20260625-task-telemetry-panel`.
+- Forced refresh URL: `http://10.26.6.8:31451/html/login.html?v=20260628-mic-status-truth`.
 ## 2026-06-25 Final Timer Loop Evidence
 
 - P0 loop: `iteration-050`, `8 passed / 0 failed / 0 skipped`.

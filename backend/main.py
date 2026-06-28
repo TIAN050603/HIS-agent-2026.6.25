@@ -487,6 +487,16 @@ class VoiceTurnsToAgentTaskRequest(BaseModel):
     current_patient_id: str = ""
 
 
+class VoiceSemanticRoleMapRequest(BaseModel):
+    patient_context: dict[str, Any] = Field(default_factory=dict)
+    turns: list[dict[str, Any]] = Field(default_factory=list)
+    current_mapping: dict[str, Any] = Field(default_factory=dict)
+    current_page_type: str = ""
+    current_patient_id: str = ""
+    reason: str = ""
+    final: bool = False
+
+
 class Utf8JSONResponse(JSONResponse):
     media_type = UTF8_JSON
 
@@ -802,7 +812,7 @@ def call_qwen_for_plan(command: str) -> tuple[dict[str, Any] | None, str, str | 
 
 
 @timed("call_qwen_json")
-def call_qwen_json(messages: list[dict[str, str]], purpose: str) -> tuple[dict[str, Any] | None, str, str | None, dict[str, Any]]:
+def call_qwen_json(messages: list[dict[str, str]], purpose: str, max_tokens: int = 900) -> tuple[dict[str, Any] | None, str, str | None, dict[str, Any]]:
     llm_info = {
         "llmUsed": False,
         "provider": get_llm_provider(),
@@ -821,7 +831,7 @@ def call_qwen_json(messages: list[dict[str, str]], purpose: str) -> tuple[dict[s
                 "Authorization": "Bearer " + api_key,
                 "Content-Type": "application/json; charset=utf-8",
             },
-            json=build_chat_completion_payload(messages, 1200),
+            json=build_chat_completion_payload(messages, max_tokens),
             timeout=45,
         )
         llm_info["llmUsed"] = True
@@ -952,6 +962,128 @@ def compact_voice_patient_context(payload: VoiceTurnsToAgentTaskRequest) -> dict
         "patientId": patient_id[:40],
         "patientName": patient_name[:80],
         "pageType": page_type[:60],
+    }
+
+
+@timed("compact_voice_semantic_turns")
+def compact_voice_semantic_turns(turns: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    compact: list[dict[str, Any]] = []
+    for item in (turns or [])[-40:]:
+        if not isinstance(item, dict):
+            continue
+        speaker_id = str(item.get("speaker_id") or item.get("speakerId") or "").strip()
+        if not re.match(r"^speaker_\d+$", speaker_id):
+            continue
+        text = str(item.get("text") or "").strip()
+        if not text:
+            continue
+        role = str(item.get("role") or "").strip().lower()
+        role_source = str(item.get("role_source") or item.get("roleSource") or "").strip()
+        compact.append({
+            "speaker_id": speaker_id[:40],
+            "role": role if role in {"doctor", "patient", "unknown"} else "unknown",
+            "role_label": item.get("role_label") or item.get("roleLabel") or "",
+            "role_source": role_source[:80],
+            "text": text[:320],
+            "is_final": bool(item.get("is_final", True)),
+        })
+    return compact
+
+
+@timed("voice_semantic_speaker_stats")
+def voice_semantic_speaker_stats(turns: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    stats: dict[str, dict[str, Any]] = {}
+    for item in turns:
+        speaker_id = str(item.get("speaker_id") or "").strip()
+        if not speaker_id:
+            continue
+        entry = stats.setdefault(speaker_id, {"count": 0, "text_len": 0, "sample": []})
+        text = str(item.get("text") or "").strip()
+        entry["count"] += 1
+        entry["text_len"] += len(text)
+        if len(entry["sample"]) < 4:
+            entry["sample"].append(text[:160])
+    return stats
+
+
+@timed("build_voice_semantic_role_prompt")
+def build_voice_semantic_role_prompt(payload: VoiceSemanticRoleMapRequest, turns: list[dict[str, Any]]) -> list[dict[str, str]]:
+    context = compact_voice_patient_context(payload)
+    patient_line = "未知患者"
+    if context.get("patientId") or context.get("patientName"):
+        patient_line = (context.get("patientId") + " " + context.get("patientName")).strip()
+    current_mapping = payload.current_mapping if isinstance(payload.current_mapping, dict) else {}
+    mapping_lines = "\n".join(
+        str(key) + " -> " + str(value)
+        for key, value in sorted(current_mapping.items())
+        if re.match(r"^speaker_\d+$", str(key))
+    ) or "无"
+    dialogue = "\n".join(
+        str(item.get("speaker_id") or "")
+        + "（当前="
+        + str(item.get("role_label") or item.get("role") or "未知")
+        + "）："
+        + str(item.get("text") or "").strip()
+        for item in turns
+    )
+    user_prompt = (
+        "当前患者：\n"
+        + patient_line
+        + "\n\n当前页面：\n"
+        + (context.get("pageType") or "未知页面")
+        + "\n\n当前 speaker 映射：\n"
+        + mapping_lines
+        + "\n\nfinal turns：\n"
+        + dialogue
+        + "\n\n请只判断每个 speaker_id 应该对应 doctor、patient 还是 unknown。"
+        "医生通常会询问、确认、下医嘱或说“记录/写成/保存”；患者通常陈述症状、身份、病史或回答医生问题。"
+        "只能返回严格 JSON："
+        '{"ok":true,"mapping":{"speaker_0":"doctor","speaker_1":"patient"},"confidence":0.0,"reason_summary":"简短原因","suggestions":[]}'
+        "。mapping 只包含有把握的 speaker_id，值只能是 doctor/patient/unknown。"
+        "不要返回页面 action，不要保存，不要修改 patient-store，不要写 audit log。"
+    )
+    system_prompt = (
+        "你是就诊会话里的说话人语义角色校正器。"
+        "你的唯一职责是根据 final turns 判断 speaker_id 到 doctor/patient 的映射；"
+        "不得规划页面动作，不得整理 Agent 任务，不得执行任何业务修改。"
+    )
+    return [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
+    ]
+
+
+@timed("normalize_voice_semantic_mapping")
+def normalize_voice_semantic_mapping(data: dict[str, Any] | None) -> dict[str, Any]:
+    if not isinstance(data, dict):
+        return {
+            "ok": False,
+            "mapping": {},
+            "confidence": 0,
+            "reason_summary": "",
+            "suggestions": [],
+        }
+    raw_mapping = data.get("mapping") if isinstance(data.get("mapping"), dict) else {}
+    mapping: dict[str, str] = {}
+    for key, value in raw_mapping.items():
+        speaker_id = str(key or "").strip()
+        role = str(value or "").strip().lower()
+        if not re.match(r"^speaker_\d+$", speaker_id):
+            continue
+        if role not in {"doctor", "patient", "unknown"}:
+            continue
+        mapping[speaker_id] = role
+    suggestions = data.get("suggestions") if isinstance(data.get("suggestions"), list) else []
+    try:
+        confidence = float(data.get("confidence") or 0)
+    except Exception:
+        confidence = 0
+    return {
+        "ok": bool(mapping),
+        "mapping": mapping,
+        "confidence": max(0, min(1, confidence)),
+        "reason_summary": str(data.get("reason_summary") or "").strip()[:240],
+        "suggestions": suggestions[:8],
     }
 
 
@@ -1379,17 +1511,23 @@ def task_prompt_contract() -> str:
 @timed("build_task_planner_prompt")
 def build_task_planner_prompt(payload: TaskPlannerRequest) -> list[dict[str, str]]:
     task_contract = mutation_contract_from_payload(payload)
+    patient_context = planner_patient_context(payload, task_contract)
+    input_route = payload.input_route if isinstance(payload.input_route, dict) else {}
+    is_voice_confirmed_task = (
+        str(payload.task_origin or "") == "voice_confirmed_task"
+        or str(input_route.get("inputType") or input_route.get("input_type") or "") == "voice_session_task"
+    )
     context = {
         "user_message": payload.user_message,
         "task_origin": payload.task_origin,
         "input_route": payload.input_route,
         "task_contract": task_contract,
-        "page_state": compact_harness_page_state(payload.page_state),
+        "page_state": compact_planner_page_state(payload.page_state),
         "active_task": payload.active_task,
-        "conversation_history": compact_agent_messages(payload.conversation_history),
-        "patient_store_summary": payload.patient_store_summary[:20],
-        "full_patient_index": (payload.full_patient_index or payload.patient_store_summary)[:20],
-        "speaker_turns": compact_conversation_turns(payload.speaker_turns),
+        "conversation_history": compact_agent_messages(payload.conversation_history) if is_voice_confirmed_task else [],
+        "patient_store_summary": patient_context,
+        "full_patient_index": [],
+        "speaker_turns": compact_conversation_turns(payload.speaker_turns) if is_voice_confirmed_task else [],
     }
     return [
         {"role": "system", "content": "You are the backend LLM planner for a HIS demo web app. You may only plan allowlisted actions. " + task_prompt_contract()},
@@ -1869,6 +2007,78 @@ def mutation_contract_from_payload(payload: TaskPlannerRequest) -> dict[str, Any
         raw_contract = route.get("task_contract") or {}
     candidates = patient_index_candidates(payload)
     return build_task_mutation_contract(payload.user_message, raw_contract, payload.page_state, candidates)
+
+
+def compact_planner_patient(item: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(item, dict):
+        return {}
+    return {
+        "patientId": str(item.get("patientId") or item.get("patient_id") or "").strip().upper(),
+        "name": str(item.get("name") or item.get("patientName") or item.get("patient_name") or "").strip(),
+        "gender": str(item.get("gender") or "")[:12],
+        "age": str(item.get("age") or "")[:12],
+        "birthDate": str(item.get("birthDate") or item.get("birth_date") or "")[:40],
+        "phone": str(item.get("phone") or item.get("mobile") or "")[:40],
+        "department": str(item.get("department") or "")[:60],
+        "visitStatus": str(item.get("visitStatus") or item.get("visit_status") or "")[:40],
+        "chiefComplaint": str(item.get("chiefComplaint") or item.get("symptoms") or "")[:80],
+    }
+
+
+def planner_patient_context(payload: TaskPlannerRequest, task_contract: dict[str, Any]) -> list[dict[str, Any]]:
+    raw_candidates: list[dict[str, Any]] = []
+    raw_candidates.extend(payload.patient_store_summary or [])
+    raw_candidates.extend(payload.full_patient_index or [])
+    page_state = payload.page_state if isinstance(payload.page_state, dict) else {}
+    for key in ("activePatient", "selectedPatient", "patient"):
+        value = page_state.get(key)
+        if isinstance(value, dict):
+            raw_candidates.append(value)
+    for key in ("visiblePatientList", "patientListSummary", "patients", "fullPatientIndex"):
+        value = page_state.get(key)
+        if isinstance(value, list):
+            raw_candidates.extend(item for item in value if isinstance(item, dict))
+
+    seen: set[str] = set()
+    candidates: list[dict[str, Any]] = []
+    for raw in raw_candidates:
+        compact = compact_planner_patient(raw)
+        key = compact.get("patientId") or compact.get("name")
+        if not key or key in seen:
+            continue
+        seen.add(str(key))
+        candidates.append(compact)
+
+    text = str(payload.user_message or "")
+    text_upper = text.upper()
+    target = task_contract.get("target_patient") if isinstance(task_contract.get("target_patient"), dict) else {}
+    target_id = str(target.get("patientId") or "").upper()
+    target_name = str(target.get("name") or "")
+    matches = [
+        item for item in candidates
+        if (
+            (target_id and str(item.get("patientId") or "").upper() == target_id)
+            or (target_name and item.get("name") == target_name)
+            or (item.get("patientId") and str(item.get("patientId")).upper() in text_upper)
+            or (item.get("name") and str(item.get("name")) in text)
+            or (item.get("phone") and str(item.get("phone")) in text)
+        )
+    ]
+    if matches:
+        return matches[:5]
+    active_id = str(page_state.get("patientId") or "").upper()
+    if active_id:
+        active_matches = [item for item in candidates if str(item.get("patientId") or "").upper() == active_id]
+        if active_matches:
+            return active_matches[:1]
+    return candidates[:12]
+
+
+def compact_planner_page_state(page_state: dict[str, Any]) -> dict[str, Any]:
+    compact = compact_harness_page_state(page_state)
+    for key in ("patients", "patientListSummary", "visiblePatientList", "fullPatientIndex"):
+        compact.pop(key, None)
+    return compact
 
 
 def mutation_to_step_update(mutation: dict[str, str], index: int, patient: dict[str, str]) -> dict[str, Any]:
@@ -2547,6 +2757,56 @@ async def next_universal_agent_action(payload: UniversalNextActionRequest):
     )
 
 
+@app.post("/api/voice/semantic-role-map", response_model=None)
+@timed("endpoint:voice_semantic_role_map")
+async def voice_semantic_role_map(payload: VoiceSemanticRoleMapRequest):
+    turns = compact_voice_semantic_turns(payload.turns)
+    stats = voice_semantic_speaker_stats(turns)
+    if len(stats) < 2:
+        return utf8_json({
+            "ok": False,
+            "message": "样本不足，至少需要两个 speaker_id。",
+            "mapping": {},
+            "stats": stats,
+        }, 200)
+    data, raw_response, error, llm_info = call_qwen_json(
+        build_voice_semantic_role_prompt(payload, turns),
+        "voice semantic role mapping",
+    )
+    if error:
+        return utf8_json(
+            {
+                "ok": False,
+                "message": "LLM 未能完成医生/患者语义校正，已保留当前映射。",
+                "error": error,
+                "mapping": {},
+                "stats": stats,
+                "llmUsed": llm_info.get("llmUsed"),
+                "provider": llm_info.get("provider"),
+                "model": llm_info.get("model"),
+                "usage": llm_info.get("usage"),
+            },
+            200,
+        )
+    parsed = normalize_voice_semantic_mapping(data or {})
+    return utf8_json(
+        {
+            "ok": parsed["ok"],
+            "mapping": parsed["mapping"],
+            "confidence": parsed["confidence"],
+            "reason_summary": parsed["reason_summary"],
+            "suggestions": parsed["suggestions"],
+            "stats": stats,
+            "llmUsed": True,
+            "provider": llm_info.get("provider"),
+            "model": llm_info.get("model"),
+            "usage": llm_info.get("usage"),
+            "rawResponse": raw_response[:1000] if raw_response else "",
+        },
+        200,
+    )
+
+
 @app.post("/api/voice/turns-to-agent-task", response_model=None)
 @timed("endpoint:voice_turns_to_agent_task")
 async def voice_turns_to_agent_task(payload: VoiceTurnsToAgentTaskRequest):
@@ -2604,10 +2864,10 @@ async def voice_turns_to_agent_task(payload: VoiceTurnsToAgentTaskRequest):
 @app.post("/api/universal-agent/task-plan", response_model=None)
 @timed("endpoint:task_plan_agent")
 async def task_plan_agent(payload: TaskPlannerRequest):
-    trace: dict[str, Any] = {"user_message": payload.user_message, "pageState": compact_harness_page_state(payload.page_state), "activeTaskBefore": payload.active_task, "errors": []}
+    trace: dict[str, Any] = {"user_message": payload.user_message, "pageState": compact_planner_page_state(payload.page_state), "activeTaskBefore": payload.active_task, "errors": []}
     try:
         trace["taskContract"] = mutation_contract_from_payload(payload)
-        planned, raw_response, parse_error, llm_info = call_qwen_json(build_task_planner_prompt(payload), "task planner")
+        planned, raw_response, parse_error, llm_info = call_qwen_json(build_task_planner_prompt(payload), "task planner", max_tokens=700)
         trace["plannerRawResponse"] = raw_response[:2000] if raw_response else ""
         trace["plannerParsedResponse"] = planned or {}
         if parse_error:

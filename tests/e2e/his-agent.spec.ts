@@ -234,6 +234,32 @@ async function mockVoiceTaskResult(page, result, onRequest = () => {}) {
   });
 }
 
+async function mockSemanticRoleMapping(page, mapping, onRequest = () => {}) {
+  await page.route(/\/api\/voice\/semantic-role-map$/, async (route) => {
+    let body = {};
+    try {
+      body = route.request().postDataJSON();
+    } catch (error) {
+      body = {};
+    }
+    await onRequest(body);
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        ok: true,
+        mapping,
+        confidence: 0.92,
+        reason_summary: "e2e semantic role mapping",
+        suggestions: [],
+        usage: { prompt_tokens: 11, completion_tokens: 7, total_tokens: 18 },
+        provider: "e2e",
+        model: "mock-llm"
+      })
+    });
+  });
+}
+
 const demoStorageKeys = [
   "his_demo_patients_v2",
   "his_demo_patients_v1",
@@ -559,13 +585,14 @@ test.describe("Floating Agent task display", () => {
     await expect(page.locator("#hisAgentHomeView")).toBeHidden();
     await expect(page.locator("#hisAgentChatView")).toBeHidden();
     await expect(page.locator("#hisAgentStatusView")).toBeVisible();
-    await expect(page.locator(".his-agent-status-row")).toHaveCount(7);
+    await expect(page.locator(".his-agent-status-row")).toHaveCount(6);
     await expect(page.locator(".his-agent-status-row").first()).toContainText("后端服务");
+    await expect(page.locator("#hisAgentStatusView")).not.toContainText("数据源");
     await expect(page.locator(".his-agent-developer-foldout")).not.toHaveAttribute("open", "");
     await page.locator("#hisAgentRefreshStatusButton").click();
     await expect(page.locator("#hisAgentRefreshStatusButton")).toHaveAttribute("aria-busy", "true");
     await expect(page.locator("#hisAgentRefreshStatusButton")).toContainText("刷新中...");
-    await expect(page.locator(".his-agent-status-row")).toHaveCount(7);
+    await expect(page.locator(".his-agent-status-row")).toHaveCount(6);
     await expect(page.locator("#hisAgentRefreshStatusButton")).toHaveAttribute("aria-busy", "false");
     await expect(page.locator("#hisAgentRefreshStatusButton")).toContainText("刷新状态");
   });
@@ -596,7 +623,11 @@ test.describe("Floating Agent task display", () => {
   });
 
   test("footer voice input dictates into main input without entering visit session", async ({ page }) => {
+    let semanticCalls = 0;
     await installFakeVoiceRuntime(page);
+    await mockSemanticRoleMapping(page, { speaker_0: "doctor", speaker_1: "patient" }, () => {
+      semanticCalls += 1;
+    });
     await page.goto("/html/patient-editor.html?patientId=P001&v=e2e-main-dictation&" + localServiceQuery);
     await openAgent(page);
     await expect(page.locator("#hisAgentHomeView")).toBeVisible();
@@ -628,6 +659,7 @@ test.describe("Floating Agent task display", () => {
     expect(stopped.recording).toBe(false);
     expect(stopped.streamTrackCount).toBe(0);
     expect(stopped.trackStopped).toBe(true);
+    expect(semanticCalls).toBe(0);
   });
 
   test("visit session opens without microphone and records only after start button", async ({ page }) => {
@@ -1345,7 +1377,7 @@ test.describe("Floating Agent task display", () => {
     await expect(page.locator("#hisAgentAsrStatus")).toContainText("ASR 服务");
     await expect(page.locator("#hisAgentAsrStatus")).toContainText("麦克风");
     await expect(page.locator("#hisAgentAsrStatus")).toContainText("说话人分离");
-    await expect(page.locator("#hisAgentAsrStatus")).toContainText("Data");
+    await expect(page.locator("#hisAgentAsrStatus")).not.toContainText("Data");
 
     const settings = page.locator("details.his-agent-settings").filter({ hasText: "服务地址" });
     await expect(settings).toBeHidden();
@@ -1391,6 +1423,25 @@ test.describe("Floating Agent task display", () => {
     expect(debug.asrHealthStatus).toBe("connected");
     expect(debug.microphoneStatus).toBe("unavailable_api");
     expect(debug.didCallGetUserMedia).toBe(false);
+  });
+
+  test("voice page does not show recording from stale persisted microphone status", async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem("his_agent_widget_state_v1", JSON.stringify({
+        microphoneStatus: "recording",
+        asrStatus: "connected",
+        diarizationStatus: "connected",
+        diarizationProvider: "diart_local"
+      }));
+    });
+    await page.goto("/html/login.html?v=e2e-stale-mic-status");
+    await openAgent(page);
+    await openVoicePanel(page);
+
+    const micChip = page.locator("#hisAgentVoiceStatusCard .his-agent-connection-chip").filter({ hasText: "麦克风" }).first();
+    await expect(micChip).toContainText("待机");
+    await expect(micChip).not.toContainText("录音中");
+    await expect(page.locator("#hisAgentStopVoiceButton")).toBeDisabled();
   });
 
   test("optional fake microphone recording @mic", async ({ page }) => {
@@ -1516,7 +1567,22 @@ test.describe("Floating Agent task display", () => {
       });
       const sockets = window.__e2eVoiceSockets || [];
       const asr = sockets.find((socket) => !socket.url.includes("/ws/diarization"));
-      const diarization = sockets.find((socket) => socket.url.includes("/ws/diarization"));
+      const diarization = await new Promise((resolve, reject) => {
+        const startedAt = Date.now();
+        const tick = () => {
+          const next = (window.__e2eVoiceSockets || []).find((socket) => socket.url.includes("/ws/diarization"));
+          if (next) {
+            resolve(next);
+            return;
+          }
+          if (Date.now() - startedAt > 1500) {
+            reject(new Error("diarization socket did not start"));
+            return;
+          }
+          setTimeout(tick, 10);
+        };
+        tick();
+      });
       asr.emit({
         type: "partial",
         session_id: "e2e_session",
@@ -1753,6 +1819,149 @@ test.describe("Floating Agent task display", () => {
     expect(taskPlanCalls).toBe(0);
     const activeTask = await page.evaluate(() => localStorage.getItem("hisAgentActiveTask"));
     expect(activeTask).toBeNull();
+  });
+
+  test("voice semantic role mapping triggers during recording and respects cooldown/stop", async ({ page }) => {
+    let semanticCalls = 0;
+    await installFakeVoiceRuntime(page);
+    await simulateConnectedLlm(page);
+    await mockSemanticRoleMapping(page, { speaker_0: "patient", speaker_1: "doctor" }, () => {
+      semanticCalls += 1;
+    });
+    await page.goto("/html/patient-editor.html?patientId=P001&v=e2e-voice-semantic-low-frequency&" + localServiceQuery);
+    await openAgent(page);
+    await page.locator("#hisAgentVisitSessionButton").click();
+    expect(await page.evaluate(() => window.HisAgentWidget.getVoiceSemanticState().initialized)).toBe(false);
+
+    await page.locator("#hisAgentStartVoiceButton").click();
+    await expect.poll(() => page.evaluate(() => window.__e2eVoiceSockets?.length || 0)).toBeGreaterThanOrEqual(1);
+    await page.evaluate(() => {
+      const sockets = window.__e2eVoiceSockets || [];
+      const asr = sockets.find((socket) => !socket.url.includes("/ws/diarization"));
+      const emitTurn = (turnId, speakerId, text) => asr.emit({
+        type: "final",
+        session_id: "e2e_semantic_session",
+        normalizedText: text,
+        turns: [{ turn_id: turnId, raw_speaker_id: speakerId, speaker_id: speakerId, text, is_final: true }]
+      });
+      emitTurn("semantic_p_1", "speaker0", "我咳嗽两天，还有一点低烧。");
+      emitTurn("semantic_d_1", "speaker1", "哪里不舒服？我先记录一下。");
+      emitTurn("semantic_p_2", "speaker0", "晚上咳得更明显，有少量白痰。");
+      emitTurn("semantic_d_2", "speaker1", "主诉写咳嗽两天伴低热。");
+    });
+    await expect.poll(() => semanticCalls, { timeout: 10_000 }).toBe(1);
+    await expect.poll(async () => {
+      const turns = await page.evaluate(() => window.HisAgentWidget.getConversationTurns());
+      return {
+        speaker0: turns.filter((turn) => turn.speaker_id === "speaker_0").every((turn) => turn.role === "patient"),
+        speaker1: turns.filter((turn) => turn.speaker_id === "speaker_1").every((turn) => turn.role === "doctor")
+      };
+    }).toEqual({ speaker0: true, speaker1: true });
+
+    await page.evaluate(() => {
+      const sockets = window.__e2eVoiceSockets || [];
+      const asr = sockets.find((socket) => !socket.url.includes("/ws/diarization"));
+      asr.emit({
+        type: "final",
+        session_id: "e2e_semantic_session",
+        normalizedText: "继续补充",
+        turns: [{ turn_id: "semantic_p_3", raw_speaker_id: "speaker0", speaker_id: "speaker0", text: "咳嗽夜间加重。", is_final: true }]
+      });
+      asr.emit({
+        type: "final",
+        session_id: "e2e_semantic_session",
+        normalizedText: "继续记录",
+        turns: [{ turn_id: "semantic_d_3", raw_speaker_id: "speaker1", speaker_id: "speaker1", text: "现病史补充夜间明显。", is_final: true }]
+      });
+    });
+    await page.waitForTimeout(500);
+    expect(semanticCalls).toBe(1);
+
+    await page.locator("#hisAgentStopVoiceButton").click();
+    await expect.poll(() => semanticCalls, { timeout: 10_000 }).toBe(2);
+    await page.evaluate(() => window.HisAgentWidget.triggerVoiceSemanticMapping("e2e_after_stop"));
+    await page.waitForTimeout(300);
+    expect(semanticCalls).toBe(2);
+    const semanticState = await page.evaluate(() => window.HisAgentWidget.getVoiceSemanticState());
+    expect(semanticState.stopped).toBe(true);
+  });
+
+  test("ending voice conversation final-maps, freezes turns, and organizer receives doctor/patient roles", async ({ page }) => {
+    let semanticCalls = 0;
+    let organizerPayload = null;
+    await simulateConnectedLlm(page);
+    await mockSemanticRoleMapping(page, { speaker_0: "patient", speaker_1: "doctor" }, () => {
+      semanticCalls += 1;
+    });
+    await mockVoiceTaskText(page, "请将患者 P001 张伟的主诉更新为咳嗽两天伴低热，现病史更新为夜间咳嗽明显，并保存。", (body) => {
+      organizerPayload = body;
+    });
+    await page.addInitScript(() => {
+      localStorage.setItem("his_agent_widget_state_v1", JSON.stringify({
+        open: false,
+        activeTab: "voice",
+        viewMode: "voice",
+        llmStatus: "connected",
+        agentMode: "llm_enabled",
+        speakerTurns: [
+          { turn_id: "freeze_p_1", raw_speaker_id: "speaker0", speaker_id: "speaker_0", role: "doctor", role_label: "医生", role_source: "default_mapping", text: "我咳嗽两天，还有一点低烧。", is_final: true },
+          { turn_id: "freeze_d_1", raw_speaker_id: "speaker1", speaker_id: "speaker_1", role: "patient", role_label: "患者", role_source: "default_mapping", text: "哪里不舒服？我先记录一下。", is_final: true },
+          { turn_id: "freeze_p_2", raw_speaker_id: "speaker0", speaker_id: "speaker_0", role: "doctor", role_label: "医生", role_source: "default_mapping", text: "晚上咳得更明显，有少量白痰。", is_final: true },
+          { turn_id: "freeze_d_2", raw_speaker_id: "speaker1", speaker_id: "speaker_1", role: "patient", role_label: "患者", role_source: "default_mapping", text: "主诉写咳嗽两天伴低热，现病史写夜间明显。", is_final: true }
+        ],
+        history: []
+      }));
+    });
+    await page.goto("/html/patient-editor.html?patientId=P001&v=e2e-voice-semantic-final-freeze&" + localServiceQuery);
+    await openAgent(page);
+    await openVoicePanel(page);
+    await expect(page.locator("#hisAgentPlanVoiceTaskButton")).toBeVisible();
+    await page.locator("#hisAgentPlanVoiceTaskButton").click();
+    await expect(page.locator("[data-voice-task-editor='1']")).toBeVisible({ timeout: 15_000 });
+    expect(semanticCalls).toBe(1);
+    expect(organizerPayload).toBeTruthy();
+    expect(organizerPayload.turns.map((turn) => turn.role)).toEqual(["patient", "doctor", "patient", "doctor"]);
+    expect(organizerPayload.turns.every((turn) => turn.role_label === "医生" || turn.role_label === "患者")).toBe(true);
+    expect(organizerPayload.turns.some((turn) => turn.speaker_id || turn.raw_speaker_id || turn.source)).toBe(false);
+    const semanticState = await page.evaluate(() => window.HisAgentWidget.getVoiceSemanticState());
+    expect(semanticState.frozen).toBe(true);
+  });
+
+  test("manual role correction is not overwritten by semantic role mapping", async ({ page }) => {
+    let semanticCalls = 0;
+    await mockSemanticRoleMapping(page, { speaker_0: "patient", speaker_1: "doctor" }, () => {
+      semanticCalls += 1;
+    });
+    await page.addInitScript(() => {
+      localStorage.setItem("his_agent_widget_state_v1", JSON.stringify({
+        open: false,
+        activeTab: "voice",
+        viewMode: "voice",
+        llmStatus: "connected",
+        agentMode: "llm_enabled",
+        speakerTurns: [
+          { turn_id: "manual_s0_1", raw_speaker_id: "speaker0", speaker_id: "speaker_0", role: "doctor", role_label: "医生", role_source: "manual_corrected", text: "我咳嗽两天，还有一点低烧。", is_final: true },
+          { turn_id: "manual_s1_1", raw_speaker_id: "speaker1", speaker_id: "speaker_1", role: "patient", role_label: "患者", role_source: "default_mapping", text: "我先记录一下。", is_final: true },
+          { turn_id: "manual_s0_2", raw_speaker_id: "speaker0", speaker_id: "speaker_0", role: "doctor", role_label: "医生", role_source: "manual_corrected", text: "晚上咳得更明显，有少量白痰。", is_final: true },
+          { turn_id: "manual_s1_2", raw_speaker_id: "speaker1", speaker_id: "speaker_1", role: "patient", role_label: "患者", role_source: "default_mapping", text: "现病史补充夜间明显。", is_final: true }
+        ],
+        history: []
+      }));
+    });
+    await page.goto("/html/patient-editor.html?patientId=P001&v=e2e-voice-semantic-manual-priority&" + localServiceQuery);
+    await openAgent(page);
+    await openVoicePanel(page);
+    const result = await page.evaluate(() => window.HisAgentWidget.triggerVoiceSemanticMapping("e2e_manual_priority", { force: true, allowWhenStopped: true, final: true }));
+    expect(result.ok).toBe(true);
+    expect(semanticCalls).toBe(1);
+    const snapshot = await page.evaluate(() => ({
+      turns: window.HisAgentWidget.getConversationTurns(),
+      semantic: window.HisAgentWidget.getVoiceSemanticState()
+    }));
+    const manualTurn = snapshot.turns.find((turn) => turn.turn_id === "manual_s0_1");
+    expect(manualTurn.role).toBe("doctor");
+    expect(manualTurn.role_source).toBe("manual_corrected");
+    expect(snapshot.semantic.suggestions.some((item) => item.speaker_id === "speaker_0" && item.suggested_role === "patient")).toBe(true);
   });
 
   test("voice task drafting is blocked when LLM is unavailable", async ({ page }) => {
@@ -2969,6 +3178,42 @@ test.describe("Agent state close-loop regressions", () => {
     await expect(page.locator("#hisAgentSendButton")).toHaveText("取消任务");
     await page.locator("#hisAgentSendButton").click();
     await expect.poll(async () => page.evaluate(() => localStorage.getItem("hisAgentActiveTask"))).toBeNull();
+    await expect(page.locator("#hisAgentSendButton")).toHaveText("发送");
+  });
+
+  test("planner failure replaces previous completed task card", async ({ page }) => {
+    await simulateConnectedLlm(page);
+    await page.route(/\/api\/universal-agent\/task-plan$/, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          ok: false,
+          kind: "error",
+          error: "LLM task planner failed: HTTP 400 context length exceeded",
+          message: "Backend LLM planner failed before any page action."
+        })
+      });
+    });
+    await page.goto("/html/login.html?v=e2e-planner-failure-visible&" + localServiceQuery);
+    await page.evaluate(() => {
+      localStorage.setItem("hisAgentTaskHistory", JSON.stringify([{
+        task_id: "e2e_old_login_task",
+        objective: "登录到医院信息系统。",
+        status: "completed",
+        plan: [{ id: "old_login_step", goal: "旧登录步骤", status: "completed", source: "backend_llm" }],
+        current_step_index: 0,
+        started_at_ms: Date.now() - 10000,
+        finished_at_ms: Date.now() - 5000
+      }]));
+    });
+    await openAgent(page);
+    await page.locator("#hisAgentOpenChatButton").click();
+    await page.locator("#hisAgentInput").fill("把宋佳的出生日期改为一九七六年十月一日。");
+    await page.locator("#hisAgentSendButton").click();
+    await expect(page.locator("#hisAgentCurrentTaskCard")).toContainText("把宋佳的出生日期改为一九七六年十月一日。");
+    await expect(page.locator("#hisAgentCurrentTaskCard")).toContainText("任务规划失败");
+    await expect(page.locator("#hisAgentCurrentTaskCard")).not.toContainText("登录到医院信息系统");
     await expect(page.locator("#hisAgentSendButton")).toHaveText("发送");
   });
 

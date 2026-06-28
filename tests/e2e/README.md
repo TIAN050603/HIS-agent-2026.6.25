@@ -312,7 +312,7 @@ RUN_MIC_E2E=1 HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter
 When validating microphone behavior, open:
 
 ```bash
-http://10.26.6.8:31451/html/login.html?v=20260625-final-loop
+http://10.26.6.8:31451/html/login.html?v=20260628-mic-status-truth
 ```
 
 `RUN_MIC_E2E=1` enables Chromium fake media flags in Playwright. It is only a UI/permission-flow regression check, not a real hardware recording test.

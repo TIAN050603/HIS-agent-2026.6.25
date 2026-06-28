@@ -161,15 +161,13 @@
     const planner = await callBackend(backendUrl, "/api/universal-agent/task-plan", payload);
     const planningMs = Date.now() - planningStartedAtMs;
     if (!planner.ok || !planner.response) {
-      const blocked = buildBlockedNoLlmTask(objective, planner.error || "backend_llm_unavailable");
-      blocked.run_id = runId;
-      ensureTaskTiming(blocked);
-      addTaskTiming(blocked, "planning_ms", planningMs);
-      addTaskTiming(blocked, "observe_ms", initialObserveMs);
-      addTaskTiming(blocked, "route_input_ms", Math.max(0, planningStartedAtMs - routeStartedAtMs - initialObserveMs));
-      updateTaskTiming(blocked);
-      saveTask(blocked);
-      return blockedNoLlmResult();
+      const failed = buildPlannerFailureTask(objective, planner.error || "backend_llm_unavailable", runId);
+      ensureTaskTiming(failed);
+      addTaskTiming(failed, "planning_ms", planningMs);
+      addTaskTiming(failed, "observe_ms", initialObserveMs);
+      addTaskTiming(failed, "route_input_ms", Math.max(0, planningStartedAtMs - routeStartedAtMs - initialObserveMs));
+      finishTask(failed, "failed", failed.lastError || "任务规划失败。", { source: "planner" });
+      return plannerFailureResult(failed);
     }
 
     const response = planner.response;
@@ -1220,6 +1218,17 @@
     };
   }
 
+  function plannerFailureResult(task) {
+    return {
+      handled: true,
+      success: false,
+      done: true,
+      llmStatus: "connected",
+      agentMode: "llm_enabled",
+      message: task && task.lastError ? task.lastError : "任务规划失败，未执行任何页面动作。"
+    };
+  }
+
   function noLlmMessage() {
     return "当前 LLM 未连接，Agent 无法理解并执行任务。你仍可以手动使用页面按钮和表单。";
   }
@@ -1238,6 +1247,34 @@
       created_at: Date.now() / 1000,
       updated_at: Date.now() / 1000,
       lastError: reason || "backend_llm_unavailable"
+    };
+  }
+
+  function buildPlannerFailureTask(objective, reason, runId) {
+    const message = "任务规划失败，未执行任何页面动作：" + (reason || "backend_planner_failed");
+    const now = Date.now();
+    return {
+      task_id: makeTaskId(),
+      run_id: runId || "",
+      objective: String(objective || ""),
+      status: "failed",
+      source: BACKEND_LLM_SOURCE,
+      llmStatus: "connected",
+      agentMode: "llm_enabled",
+      slots: {},
+      plan: [{
+        id: "planner_failed",
+        goal: "生成任务计划",
+        actionType: "task_plan",
+        status: "failed",
+        source: BACKEND_LLM_SOURCE,
+        error: message
+      }],
+      current_step_index: 0,
+      created_at: now / 1000,
+      created_at_ms: now,
+      updated_at: now / 1000,
+      lastError: message
     };
   }
 
@@ -1451,7 +1488,22 @@
     if (window.__HIS_AGENT_FAST_ANIMATION__) {
       return { enabled: false, stepDelayMs: 0, fieldDelayMs: 0, clickDelayMs: 0 };
     }
-    const defaults = { enabled: false, stepDelayMs: 1000, fieldDelayMs: 1000, clickDelayMs: 300 };
+    const defaults = { enabled: true, stepDelayMs: 1000, fieldDelayMs: 1000, clickDelayMs: 1000 };
+    try {
+      const params = new URLSearchParams(window.location.search || "");
+      const queryValue = params.get("demoPacing") || params.get("agentPacing");
+      if (queryValue === "0" || queryValue === "false") {
+        window.sessionStorage && window.sessionStorage.setItem("his_agent_demo_pacing_override", "0");
+        return { enabled: false, stepDelayMs: 0, fieldDelayMs: 0, clickDelayMs: 0 };
+      }
+      if (queryValue === "1" || queryValue === "true") {
+        window.sessionStorage && window.sessionStorage.setItem("his_agent_demo_pacing_override", "1");
+        return defaults;
+      }
+      const sessionOverride = window.sessionStorage && window.sessionStorage.getItem("his_agent_demo_pacing_override");
+      if (sessionOverride === "0") return { enabled: false, stepDelayMs: 0, fieldDelayMs: 0, clickDelayMs: 0 };
+      if (sessionOverride === "1") return defaults;
+    } catch (error) {}
     let source = window.__HIS_AGENT_DEMO_PACING__ || null;
     if (!source && window.HIS_AGENT_RUNTIME_CONFIG && window.HIS_AGENT_RUNTIME_CONFIG.demoPacing) {
       source = window.HIS_AGENT_RUNTIME_CONFIG.demoPacing;
@@ -1484,14 +1536,24 @@
     return delay;
   }
 
+  async function waitDemoPacingAfterAction(kind) {
+    const config = demoPacingConfig();
+    if (!config.enabled) return 0;
+    const key = kind === "click" ? "clickDelayMs" : (kind === "field" ? "fieldDelayMs" : "stepDelayMs");
+    const delay = Math.max(0, Number(config.stepDelayMs || 0), Number(config[key] || 0));
+    if (!delay) return 0;
+    await sleep(delay);
+    return delay;
+  }
+
   async function applyDemoPacingAfterStep(action, step, result) {
     if (!result || result.success === false) return 0;
     const type = action && action.type || step && (step.actionType || step.action_type) || "";
     let kind = "";
-    if (type === "update_patient_field" || type === "set_select" || type === "fill_login_form") kind = "field";
-    if (type === "save_patient" || type === "submit_login" || type === "open_page" || type === "navigate_internal" || type === "navigate" || type === "open_patient_editor") kind = "click";
+    if (type === "update_patient_field" || type === "update_patient_fields" || type === "set_select" || type === "fill_login_form" || type === "write_clinical_note_field") kind = "field";
+    if (type === "save_patient" || type === "submit_login" || type === "open_page" || type === "navigate_internal" || type === "navigate" || type === "open_patient_editor" || type === "select_patient" || type === "logout") kind = "click";
     if (!kind) return 0;
-    const delay = await waitDemoPacing(kind);
+    const delay = await waitDemoPacingAfterAction(kind);
     if (!delay) return 0;
     result.timing_breakdown = mergeTimingBreakdown(result.timing_breakdown, {
       demo_delay_ms: delay,
@@ -2679,29 +2741,62 @@
       activePatientId === targetPatientId &&
       pageStateForPrompt.pageType === "patientEditor"
     );
+    const fullPatientIndex = compactPatientIndex(options.fullPatientIndex || getFullPatientIndex());
     const patientIndex = canUseScopedPatientContext
       ? (pageStateForPrompt.activePatient ? [pageStateForPrompt.activePatient] : [])
-      : compactPatientIndex(options.fullPatientIndex || getFullPatientIndex());
+      : selectPlannerPatientIndex(fullPatientIndex, objective, pageStateForPrompt, plannerTaskContract);
     if (canUseScopedPatientContext) {
       pageStateForPrompt.visiblePatientList = [];
     }
+    pageStateForPrompt.visiblePatientList = [];
     if (plannerTaskContract && plannerTaskContract.expected_mutations && plannerTaskContract.expected_mutations.length) {
       inputRoute.task_contract = plannerTaskContract;
     }
+    const includeDialogueContext = Boolean(isVoiceConfirmedTask || inputRoute.inputType === "voice_session_task");
     return {
       user_message: String(objective || "").trim(),
       task_origin: String(options.source || ""),
       input_route: inputRoute,
       page_state: pageStateForPrompt,
       active_task: compactActiveTask(options.activeTask || {}),
-      conversation_history: compactAgentMessages(options.agentMessages || []),
+      conversation_history: includeDialogueContext ? compactAgentMessages(options.agentMessages || []) : [],
       patient_store_summary: patientIndex,
-      full_patient_index: canUseScopedPatientContext ? [] : patientIndex,
-      speaker_turns: compactSpeakerTurns(options.speakerTurns || []),
+      full_patient_index: [],
+      speaker_turns: includeDialogueContext ? compactSpeakerTurns(options.speakerTurns || []) : [],
       task_contract: plannerTaskContract,
       audit_log_summary: getAuditLogSummary(3),
       connection_status: compactConnectionStatus(options.connectionStatus || {})
     };
+  }
+
+  function selectPlannerPatientIndex(patients, objective, pageState, contract) {
+    const list = Array.isArray(patients) ? patients.filter(Boolean) : [];
+    const rawText = String(objective || "");
+    const upperText = rawText.toUpperCase();
+    const target = contract && contract.target_patient || {};
+    const targetId = String(target.patientId || "").toUpperCase();
+    const targetName = String(target.name || "");
+    const matches = list.filter(function (patient) {
+      const patientId = String(patient.patientId || "").toUpperCase();
+      const name = String(patient.name || "");
+      const phone = String(patient.phone || "");
+      return Boolean(
+        (targetId && patientId === targetId) ||
+        (targetName && name === targetName) ||
+        (patientId && upperText.indexOf(patientId) >= 0) ||
+        (name && rawText.indexOf(name) >= 0) ||
+        (phone && rawText.indexOf(phone) >= 0)
+      );
+    });
+    if (matches.length) return matches.slice(0, 5).map(compactPatientForPlanner).filter(Boolean);
+    const activePatientId = String(pageState && (pageState.patientId || pageState.activePatient && pageState.activePatient.patientId) || "").toUpperCase();
+    if (activePatientId) {
+      const activeMatch = list.find(function (patient) {
+        return String(patient.patientId || "").toUpperCase() === activePatientId;
+      });
+      if (activeMatch) return [compactPatientForPlanner(activeMatch)].filter(Boolean);
+    }
+    return list.slice(0, 12).map(compactPatientForPlanner).filter(Boolean);
   }
 
   function compactMutationContractForPlanner(contract) {
@@ -2777,6 +2872,21 @@
       department: patient.department || "",
       visitStatus: patient.visitStatus || "",
       chiefComplaint: truncateText(patient.chiefComplaint || "", 120)
+    };
+  }
+
+  function compactPatientForPlanner(patient) {
+    if (!patient || typeof patient !== "object") return null;
+    return {
+      patientId: patient.patientId || "",
+      name: patient.name || "",
+      gender: patient.gender || "",
+      age: patient.age || "",
+      birthDate: patient.birthDate || "",
+      phone: patient.phone || "",
+      department: patient.department || "",
+      visitStatus: patient.visitStatus || "",
+      chiefComplaint: truncateText(patient.chiefComplaint || "", 80)
     };
   }
 

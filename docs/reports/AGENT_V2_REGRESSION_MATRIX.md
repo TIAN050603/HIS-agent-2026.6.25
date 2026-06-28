@@ -119,7 +119,7 @@ http://10.26.6.8:31210/html/login.html?v=20260624-agent-v3-mutation-voice-close-
 强制刷新：
 
 ```text
-http://10.26.6.8:31210/html/login.html?v=20260625-loop-gate
+http://10.26.6.8:31210/html/login.html?v=20260628-mic-status-truth
 ```
 
 ## 2026-06-25 Final Regression Matrix
@@ -136,5 +136,5 @@ http://10.26.6.8:31210/html/login.html?v=20260625-loop-gate
 
 强制刷新：
 ```text
-http://10.26.6.8:31451/html/login.html?v=20260625-final-loop
+http://10.26.6.8:31451/html/login.html?v=20260628-mic-status-truth
 ```

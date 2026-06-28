@@ -6,12 +6,12 @@ const roots = [
   "html",
   "shared",
   "tests/e2e",
+  "docs/reports",
   ".agents/skills/his-ui-e2e-review"
 ];
 
 const explicitFiles = [
   "AGENTS.md",
-  "IMPLEMENTATION_REPORT.md",
   "package.json"
 ];
 

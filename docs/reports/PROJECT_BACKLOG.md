@@ -1,4 +1,4 @@
-﻿# Project Backlog
+# Project Backlog
 
 ## Fixed - 2026-06-26 悬浮框计时采样与任务演示节奏
 
@@ -570,7 +570,7 @@ Open:
 - fixed: live LLM tasks that already have a backend-planned allowlisted task no longer stop mid-execution because a later quick status refresh is slow.
 - verified: P0 iteration-031 `8 / 0 / 0`; P1 iteration-032 `14 / 0 / 0`; default E2E `73 / 0 / 3`; RUN_LLM_E2E `75 / 0 / 1`.
 - open: optional fake microphone `@mic` remains skipped in headless default runs unless the browser exposes fake media capture.
-- current forced refresh URL: `http://10.26.6.8:31210/html/login.html?v=20260625-loop-gate`.
+- current forced refresh URL: `http://10.26.6.8:31210/html/login.html?v=20260628-mic-status-truth`.
 
 ## 2026-06-25 Final Backlog Update
 
@@ -581,7 +581,7 @@ Open:
 - verified: full loop iteration-038 `29 / 0 / 0`.
 - verified: default E2E `73 / 0 / 3`.
 - verified: RUN_LLM_E2E `75 / 0 / 1`.
-- current forced refresh URL: `http://10.26.6.8:31451/html/login.html?v=20260625-final-loop`.
+- current forced refresh URL: `http://10.26.6.8:31451/html/login.html?v=20260628-mic-status-truth`.
 - open: optional fake microphone `@mic` remains environment-dependent.
 - open: full 500-cell patient-field mutation execution remains a separate mutation-mode gate, not claimed by this pass.
 
@@ -593,7 +593,7 @@ Open:
 - fixed: agent-history 对旧任务显示 `未记录`，对本地 DOM 步骤显示 `本地执行`，对 backend usage 显示真实 token。
 - verified: full loop iteration-049 `29 / 0 / 0`; default E2E `76 / 0 / 3`; `npm run check:encoding` passed; performance baseline source iteration-049.
 - observed: latest full `RUN_LLM_E2E=1` was `77 / 1 / 1`; the live Zhang Wei gender update did not mutate the page to `女` within timeout, and a follow-up `@llm` targeted run was skipped by real LLM availability gate.
-- current forced refresh URL: `http://10.26.6.8:31451/html/login.html?v=20260625-task-telemetry-panel`.
+- current forced refresh URL: `http://10.26.6.8:31451/html/login.html?v=20260628-mic-status-truth`.
 ## Fixed - 2026-06-25 任务计时、Demo 节奏和步骤滚动
 
 Fixed:
@@ -620,3 +620,18 @@ Verification:
 
 Open:
 - `RUN_LLM_E2E=1` is not green in the current Qwen run: backend health is fast and ok, but the focused live `@llm` P001 phone mutation case did not update patient-store within 90s.
+## Fixed - 2026-06-28 Voice Session Semantic Role Mapping
+
+Fixed:
+- LLM semantic role mapping now runs inside the voice session, before task organizing.
+- Recording final turns can trigger low-frequency, async speaker role mapping with sample, cooldown, in-flight, manual-edit, and active-mutation guards.
+- Stop voice task disables background triggers and may run one final mapping, but does not organize a task.
+- End conversation runs final mapping, freezes turns, then sends corrected doctor/patient turns to the task organizer.
+- Main input voice dictation never calls Diart semantic role mapping.
+- Manual role corrections and swaps have priority over LLM mapping; conflicts are stored as suggestions only.
+
+Verification:
+- `npm run check:encoding`: passed.
+- Targeted semantic voice E2E: 5 passed.
+- Default E2E: 85 passed / 3 skipped.
+- `RUN_LLM_E2E=1`: 85 passed / 1 skipped / 2 failed in existing live-LLM happy-path mutation cases; semantic voice mapping coverage passed.

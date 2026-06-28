@@ -5,12 +5,12 @@
   "scoreRulesFile": "loop-engineering/score-rules.json",
   "maxIterations": 6,
   "defaultTimeoutMs": 10000,
-  "defaultBaseUrl": "http://10.26.6.8:31684",
+  "defaultBaseUrl": "http://10.26.6.8:31416",
   "health": {
     "frontendPath": "/html/login.html",
-    "backendUrl": "http://10.26.6.8:30663",
-    "asrUrl": "http://10.26.6.8:30410",
-    "llmUrl": "http://10.26.6.8:31756",
+    "backendUrl": "http://10.26.6.8:31783",
+    "asrUrl": "http://10.26.6.8:30127",
+    "llmUrl": "http://10.26.6.8:31139",
     "diarizationUrl": "http://127.0.0.1:8020"
   },
   "storageKeys": [
