@@ -17,8 +17,8 @@
 
 ```bash
 npm run check:encoding
-HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list
-RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list
+HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list
+RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list
 ```
 
 当前容器已通过 Playwright 官方安装方式安装 Chromium：
@@ -32,7 +32,7 @@ npx playwright install-deps chromium
 默认 E2E 已可运行：
 
 ```bash
-HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list
+HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list
 ```
 
 最近一次默认结果：73 passed / 3 skipped / 0 failed。
@@ -49,14 +49,14 @@ Playwright 浏览器路径：
 
 ```bash
 cd /huaiwenpang/universal_agent
-HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e
+HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e
 ```
 
 如果容器内存在系统 Chromium / Chrome，但 Playwright 自带浏览器没有安装，可以显式指定浏览器路径：
 
 ```bash
 cd /huaiwenpang/universal_agent
-PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list
+PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list
 ```
 
 当前容器已检查 `chromium`、`chromium-browser`、`google-chrome`、`google-chrome-stable`、`microsoft-edge` 和 `/usr/bin` 下的 chrome/chromium 项；暂未发现可用浏览器。未安装浏览器时，E2E 可以列出测试，但不能启动 Chromium。
@@ -65,21 +65,21 @@ PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium HIS_BASE_URL=http://10.26.
 
 ```bash
 cd /huaiwenpang/universal_agent
-HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e:headed
+HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e:headed
 ```
 
 真实 LLM 主链路默认跳过，因为会修改 demo patient-store。需要显式开启：
 
 ```bash
 cd /huaiwenpang/universal_agent
-RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e:headed
+RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e:headed
 ```
 
 也可以只运行真实 LLM 用例：
 
 ```bash
 cd /huaiwenpang/universal_agent
-HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e:llm
+HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e:llm
 ```
 
 ## 当前依赖
@@ -127,7 +127,7 @@ npx playwright install-deps chromium
 开启方式：
 
 ```bash
-RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e:headed
+RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e:headed
 ```
 
 真实 LLM 用例会在浏览器上下文中快照并恢复以下 localStorage 数据：
@@ -167,14 +167,14 @@ RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e:headed
 
 ```bash
 npm run check:encoding
-HIS_BASE_URL=http://10.26.6.8:31684 npm run loop:baseline
-HIS_BASE_URL=http://10.26.6.8:31684 npm run loop:evaluate
+HIS_BASE_URL=http://10.26.6.8:31451 npm run loop:baseline
+HIS_BASE_URL=http://10.26.6.8:31451 npm run loop:evaluate
 ```
 
 默认 `baseline` / `evaluate` 不执行真实 mutation。需要 mutation 时必须显式运行：
 
 ```bash
-RUN_AGENT_LOOP_MUTATIONS=1 HIS_BASE_URL=http://10.26.6.8:31684 npm run loop:full
+RUN_AGENT_LOOP_MUTATIONS=1 HIS_BASE_URL=http://10.26.6.8:31451 npm run loop:full
 ```
 
 每轮输出位于：
@@ -191,8 +191,8 @@ loop-engineering/artifacts/iteration-001/traces/
 ## 2026-06-25 最新验收结果
 
 ```bash
-HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list
-RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list
+HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list
+RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list
 ```
 
 - 默认 E2E：73 passed / 3 skipped / 0 failed。
@@ -236,7 +236,7 @@ ASR 服务: connected
 
 ```bash
 cd /huaiwenpang/universal_agent
-HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list
+HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list
 ```
 
 ## 连接状态显示回归
@@ -244,7 +244,7 @@ HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list
 悬浮框服务状态依赖浏览器 `fetch`，因此 backend / ASR 不仅要 health 返回 200，还必须允许当前前端 origin：
 
 ```text
-http://10.26.6.8:31684
+http://10.26.6.8:31451
 ```
 
 当前 E2E 已覆盖服务状态 chip 和诊断区可见性；本轮真实浏览器额外验证 `window.__HIS_AGENT_WIDGET_DEBUG__.serviceDetails` 中 backend / LLM / ASR 均为 `connected`。
@@ -254,19 +254,19 @@ http://10.26.6.8:31684
 The floating Agent uses browser `fetch`, so backend health from `curl` or Playwright `page.request` is not enough. The default E2E suite includes a browser-context check that loads the current frontend origin and calls:
 
 ```text
-http://10.26.6.8:30663/api/llm/test
+http://10.26.6.8:31169/api/llm/test
 ```
 
 Current command:
 
 ```bash
-HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list
+HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list
 ```
 
 For the current demo container, backend CORS allows the current frontend origin and a dev-only regex for dynamic demo ports:
 
 ```text
-http://10.26.6.8:31684
+http://10.26.6.8:31451
 ^https?://(localhost|127\.0\.0\.1|10\.26\.6\.8):[0-9]+$
 ```
 
@@ -277,7 +277,7 @@ If the container port changes again, prefer setting `CORS_ALLOWED_ORIGINS` or `C
 The default E2E suite does not require real microphone hardware. Playwright/headless results must not be treated as proof that the user's real browser cannot record.
 
 Manual check:
-1. Open `http://10.26.6.8:31684/html/login.html?v=20260617-ports`.
+1. Open `http://10.26.6.8:31451/html/login.html?v=20260617-ports`.
 2. Open the floating Agent and switch to `就诊会话`.
 3. Click `检查麦克风权限`.
 4. If the check fails, open Console and run:
@@ -297,22 +297,22 @@ If the current HTTP IP origin does not expose `getUserMedia`, try one of these a
 Optional fake microphone E2E:
 
 ```bash
-RUN_MIC_E2E=1 HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list
+RUN_MIC_E2E=1 HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list
 ```
 
 ## Current service mapping
 
-- Frontend: `http://10.26.6.8:31684`
-- Backend: `http://10.26.6.8:30663`
-- ASR: `http://10.26.6.8:30410`
-- LLM service: `http://10.26.6.8:31756`
-- Jupyter: `http://10.26.6.8:46121`
+- Frontend: `http://10.26.6.8:31451`
+- Backend: `http://10.26.6.8:31169`
+- ASR: `http://10.26.6.8:30197`
+- LLM service: `http://10.26.6.8:31034`
+- Jupyter: `http://10.26.6.8:49676`
 - SSH: `10.26.6.8:30855`
 
 When validating microphone behavior, open:
 
 ```bash
-http://10.26.6.8:31684/html/login.html?v=20260625-final-loop
+http://10.26.6.8:31451/html/login.html?v=20260625-final-loop
 ```
 
 `RUN_MIC_E2E=1` enables Chromium fake media flags in Playwright. It is only a UI/permission-flow regression check, not a real hardware recording test.
@@ -335,15 +335,15 @@ http://10.26.6.8:31684/html/login.html?v=20260625-final-loop
 
 ```bash
 npm run check:encoding
-HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list
-RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list
-RUN_MIC_E2E=1 HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list
+HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list
+RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list
+RUN_MIC_E2E=1 HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list
 ```
 
 关键矩阵可用标题 grep 连续跑两轮：
 
 ```bash
-HIS_BASE_URL=http://10.26.6.8:31684 npx playwright test -c tests/e2e/playwright.config.ts tests/e2e/his-agent.spec.ts --grep 'waiting_user clarification|task progress updates|task progress does not force|chat workspace can be opened directly|primary footer button|renders compact current task list|pre-filled demo login|missing patient task|patient context carries from Liu Yang' --reporter=list
+HIS_BASE_URL=http://10.26.6.8:31451 npx playwright test -c tests/e2e/playwright.config.ts tests/e2e/his-agent.spec.ts --grep 'waiting_user clarification|task progress updates|task progress does not force|chat workspace can be opened directly|primary footer button|renders compact current task list|pre-filled demo login|missing patient task|patient context carries from Liu Yang' --reporter=list
 ```
 
 2026-06-23 结果：
@@ -355,6 +355,6 @@ HIS_BASE_URL=http://10.26.6.8:31684 npx playwright test -c tests/e2e/playwright.
 
 ## 2026-06-25 Current results
 
-- `HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list`: 73 passed / 3 skipped.
-- `RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list`: 75 passed / 1 skipped.
+- `HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list`: 73 passed / 3 skipped.
+- `RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list`: 75 passed / 1 skipped.
 - Remaining skipped case: optional fake microphone recording `@mic`.

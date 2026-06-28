@@ -56,10 +56,10 @@ Automate `p0-wrong-patient-protection` with a real browser case that starts on a
 
 ## 2026-06-25 Final Capability Status
 
-- Frontend URL: `http://10.26.6.8:31684`.
-- Backend URL: `http://10.26.6.8:30663`.
-- ASR URL: `http://10.26.6.8:30410`.
-- LLM service mapping: `8001->31756`.
+- Frontend URL: `http://10.26.6.8:31451`.
+- Backend URL: `http://10.26.6.8:31169`.
+- ASR URL: `http://10.26.6.8:30197`.
+- LLM service mapping: `8001->31034`.
 - Full loop evidence: iteration-038 `29 / 0 / 0`, including P0, P1, and newly automated P2 checks.
 - P2 message and scroll capabilities are now covered by browser automation instead of skipped rows.
 - Live LLM write path remains gated by backend LLM source, allowlist executor, page postconditions, patient-store verification, and audit evidence.

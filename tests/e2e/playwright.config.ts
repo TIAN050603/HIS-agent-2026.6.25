@@ -1,6 +1,6 @@
 ﻿import { defineConfig, devices } from "@playwright/test";
 
-const baseURL = process.env.HIS_BASE_URL || "http://10.26.6.8:31684";
+const baseURL = process.env.HIS_BASE_URL || "http://10.26.6.8:31451";
 const chromiumExecutablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || "";
 const runMicE2E = process.env.RUN_MIC_E2E === "1";
 const chromiumLaunchOptions = {

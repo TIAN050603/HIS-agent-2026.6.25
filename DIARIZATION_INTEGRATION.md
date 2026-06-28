@@ -60,9 +60,9 @@ The diarization service does not replace ASR, does not execute Agent tasks, and 
 Current verified external URLs:
 
 - Frontend: `http://10.26.6.8:31875`
-- Backend: `http://10.26.6.8:31593`
+- Backend: `http://10.26.6.8:31451`
 - ASR: `http://10.26.6.8:31478`
-- LLM service: `http://10.26.6.8:31893`
+- LLM service: `http://10.26.6.8:31034`
 - Diarization: proxied through backend because container port `8020` is not externally mapped.
 
 Current internal URLs:
@@ -148,8 +148,8 @@ Backend proxy:
 
 External browser path:
 
-- `GET http://10.26.6.8:31593/diarization/health`
-- `WS ws://10.26.6.8:31593/ws/diarization`
+- `GET http://10.26.6.8:31451/diarization/health`
+- `WS ws://10.26.6.8:31451/ws/diarization`
 
 ## Browser Integration
 
@@ -292,4 +292,4 @@ Verification added:
 - voiceView 仍可在 Diart 不可用时使用 manual turns，但 UI 不会把 manual turns 标记为 automatic diarization。
 - `RUN_LLM_E2E=1` 全量套件已覆盖 voice turns -> editable task -> existing Agent taskflow，并通过 `75 / 0 / 1`。
 - full loop iteration-038 已覆盖 voice task confirmation cases，结果 `29 / 0 / 0`。
-- 当前强制刷新 URL：`http://10.26.6.8:31684/html/login.html?v=20260625-final-loop`。
+- 当前强制刷新 URL：`http://10.26.6.8:31451/html/login.html?v=20260625-final-loop`。

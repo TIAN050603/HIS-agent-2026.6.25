@@ -156,4 +156,4 @@ Base URL: http://10.26.6.8:31681
 - P2 loop automation now covers widget scroll and message actions that were previously cataloged but skipped.
 - Full loop iteration-038 passed `29 / 0 / 0`.
 - Agent actions continue to require backend LLM source, allowlist, page-context validation, and postcondition verification for high-risk business operations.
-- Current public URL: `http://10.26.6.8:31684/html/login.html?v=20260625-final-loop`.
+- Current public URL: `http://10.26.6.8:31451/html/login.html?v=20260625-final-loop`.

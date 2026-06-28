@@ -2,6 +2,20 @@
 
 本文件只记录当前悬浮框 UI 的真实代码分布，供后续小步修改和 E2E 回归使用。不要把这里当作新功能需求清单。
 
+## 2026-06-26 计时刷新与演示 pacing
+
+- `shared/agent-widget.js`
+  - `TASK_SUMMARY_TICK_MS = 100`：悬浮框任务耗时 0.1s 采样。
+  - `startTaskSummaryTicker()`：active task 与 planning task 都会刷新；100ms tick 只刷新 `.his-agent-current-elapsed`，结构卡片保持低频重绘以免打断步骤列表点击/滚动。
+  - `refreshCurrentTaskElapsed()`：直接更新当前任务卡中的耗时文本。
+  - `handleCommand()`：正式任务计时起点在 LLM 预检完成后、调用 orchestrator 前设置。
+- `shared/agent-task-orchestrator.js`
+  - `demoPacingConfig()`：真实页面默认启用 1s pacing；`demoPacing=0/1` 或 `agentPacing=0/1` 写入 session override，跨页面跳转保持。
+  - `waitDemoPacingAfterAction()` / `applyDemoPacingAfterStep()`：成功页面动作后统一按 step/action pacing 取较大值等待，并写入 `timing_breakdown.demo_delay_ms`。
+- `tests/e2e/his-agent.spec.ts`
+  - `localServiceQuery` 默认带 `demoPacing=0`，让自动化测试不被真实演示节奏拖慢。
+  - 覆盖 planning 计时实时刷新、pacing 计入 timing、展开步骤滚动不跳顶。
+
 ## 2026-06-25 语音任务既往病史字段链路
 
 - `shared/agent-widget.js`
@@ -591,7 +605,7 @@ Regression test:
 - 悬浮 Agent -> 就诊会话 -> `语音输入`。
 - `shared/voice-input-controller.js` 同时连接：
   - ASR: `ws://10.26.6.8:31478/ws`
-  - Diarization: `ws://10.26.6.8:31593/ws/diarization`
+  - Diarization: `ws://10.26.6.8:31451/ws/diarization`
 - `window.__HIS_AGENT_VOICE_DEBUG__.dump()` 当前可确认：
   - `asrHealthStatus=connected`
   - `asrWebSocketStatus=connected`

@@ -1,4 +1,48 @@
-﻿# IMPLEMENTATION_REPORT
+## 2026-06-28 Port Sync
+
+- Container: `5p9ip18cikv47-0`.
+- Public ports updated: frontend `5500->31451`, backend `8000->31169`, ASR `8010->30197`, LLM service `8001->31034`, Jupyter `8888->49676`, SSH `22->30855`.
+- Current public URL: `http://10.26.6.8:31451/html/login.html?v=20260628-port-sync`.
+- Updated formal runtime defaults, backend CORS defaults, E2E default base URL, and current testing documentation.
+- Sync time: `2026-06-28T06:32:53Z`.
+
+# IMPLEMENTATION_REPORT
+
+## 2026-06-26 悬浮框实时计时与任务演示节奏
+
+### 修复内容
+
+- `shared/agent-widget.js`
+  - 悬浮框当前任务计时采样从 250ms 调整为 100ms。
+  - planning 阶段也会刷新耗时，不再只在 activeTask 出现后才跳动。
+  - 100ms tick 只轻量更新“耗时”文本；结构化任务卡仍低频重绘，避免“展开步骤”点击时 DOM 被替换。
+  - 正式任务计时起点调整到 LLM 预检完成、进入 orchestrator 规划前，避免执行前状态检测把所有任务总耗时抬高。
+- `shared/agent-task-orchestrator.js`
+  - Demo pacing 默认开启：`stepDelayMs=1000`、`fieldDelayMs=1000`、`clickDelayMs=1000`。
+  - 成功页面动作后统一按 step/action pacing 取较大值等待，确保用户能看到页面变化。
+  - 增加 `demoPacing=0/1` 或 `agentPacing=0/1` query 覆盖，并写入 `sessionStorage`，保证 E2E 页面跳转后仍可关闭 pacing。
+- `tests/e2e/his-agent.spec.ts`
+  - 新增 planning 计时实时刷新回归。
+  - 新增 pacing 延迟写入 `timing.demo_delay_ms` 的回归。
+  - 默认 E2E query 增加 `demoPacing=0`，避免测试被演示节奏拖慢；真实用户访问不带该参数。
+
+### 验证结果
+
+- `npm run check:encoding`: passed.
+- JS syntax:
+  - `node --check shared/agent-widget.js`: passed.
+  - `node --check shared/agent-task-orchestrator.js`: passed.
+- Targeted E2E:
+  - `planning timer refreshes`: passed.
+  - `demo pacing records`: passed.
+  - `step list keeps scroll`: 6 passed.
+- Default E2E:
+  - `HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list`
+  - Result: 82 passed / 3 skipped.
+
+### 强制刷新 URL
+
+- `http://10.26.6.8:31451/html/login.html?v=20260626-timer-pacing`
 
 ## 2026-06-25 就诊会话整理到既往病史字段更新闭环
 
@@ -33,8 +77,8 @@
   - `Patient and field resolver contracts`: 3 passed.
   - `voice confirmed task forwards expected mutations and executes normal taskflow`: passed.
   - `mutation task with update save verify changes patient-store and audit`: passed.
-- Default E2E: `HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list` -> 73 passed / 3 skipped.
-- RUN_LLM_E2E: `RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list` -> 75 passed / 1 skipped.
+- Default E2E: `HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list` -> 73 passed / 3 skipped.
+- RUN_LLM_E2E: `RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list` -> 75 passed / 1 skipped.
 - Loop:
   - `npm run loop:voice-task-equivalence` -> `static_equivalence_passed`.
   - `npm run loop:matrix` -> `matrix_generated`, 20 patients, 25 editable fields.
@@ -51,7 +95,7 @@
 
 ### 强制刷新 URL
 
-- `http://10.26.6.8:31684/html/patient-editor.html?patientId=P001&v=20260625-past-history-field-chain`
+- `http://10.26.6.8:31451/html/patient-editor.html?patientId=P001&v=20260625-past-history-field-chain`
 
 ## 2026-06-24 Loop Engineering 基础设施
 
@@ -2127,22 +2171,22 @@ http://10.26.6.8:31210/html/login.html?v=20260625-loop-gate
 
 ## 2026-06-25 Final Loop / LLM / Port Convergence
 
-- Current public ports: frontend `5500->31684`, backend `8000->30663`, ASR `8010->30410`, LLM service `8001->31756`, Jupyter `8888->46121`, SSH `22->30855`.
+- Current public ports: frontend `5500->31451`, backend `8000->31169`, ASR `8010->30197`, LLM service `8001->31034`, Jupyter `8888->49676`, SSH `22->30855`.
 - Runtime defaults and test defaults now use the current frontend/backend/ASR/LLM mapping. Historical report entries above remain as dated evidence only.
 - Backend LLM planner robustness: `call_qwen_json` now retries malformed JSON once by asking the configured backend LLM to return exactly one valid JSON object. If repair fails, planning still fails; no deterministic fallback or keyword execution was introduced.
 - Widget scroll robustness: `AgentScrollManager.scrollToBottom({ force: true })` now explicitly holds auto-follow and re-aligns the bottom across multiple layout frames. This fixes the latest-output-visible P2 case without forcing scroll when the user is intentionally reading older messages.
 - Loop automation: the previously skipped P2 cases are now implemented in `loop-engineering/scripts/run-case.mjs` and listed in `loop-engineering/cases/core-cases.json`.
 - P2 loop: iteration-037 passed `7 / 0 / 0`.
 - Full loop: iteration-038 passed `29 / 0 / 0`.
-- Default E2E: `HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list` passed `73 / 0 / 3`.
-- RUN_LLM_E2E: `RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list` passed `75 / 0 / 1`; both live `@llm` write cases executed and passed.
+- Default E2E: `HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list` passed `73 / 0 / 3`.
+- RUN_LLM_E2E: `RUN_LLM_E2E=1 HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list` passed `75 / 0 / 1`; both live `@llm` write cases executed and passed.
 - Remaining skipped item: optional fake microphone recording `@mic` in headless browser mode.
 - Not claimed: broad 500-cell mutation execution across all patients and fields without an explicit mutation-mode run.
 
 Forced refresh URL:
 
 ```text
-http://10.26.6.8:31684/html/login.html?v=20260625-final-loop
+http://10.26.6.8:31451/html/login.html?v=20260625-final-loop
 ```
 
 ## 2026-06-25 Task Telemetry Panel / Scroll Finalization
@@ -2160,7 +2204,7 @@ http://10.26.6.8:31684/html/login.html?v=20260625-final-loop
 强制刷新 URL：
 
 ```text
-http://10.26.6.8:31684/html/login.html?v=20260625-task-telemetry-panel
+http://10.26.6.8:31451/html/login.html?v=20260625-task-telemetry-panel
 ```
 ## 2026-06-25 任务计时、Demo 节奏与步骤滚动修复
 
@@ -2175,6 +2219,6 @@ http://10.26.6.8:31684/html/login.html?v=20260625-task-telemetry-panel
 - 修复范围：active task/step 运行计时、terminal freeze、demo pacing 分桶、当前步骤高亮/闪烁、展开步骤列表滚动保持、聊天页切换瞬时恢复滚动。
 - 追加修复：登录提交的后置条件校验在极快本地 DOM 路径里可能同毫秒完成，导致 `verify_ms=0`；现在只在真实 verifier 已执行时记录最小 `1ms`，不改变登录成功/失败判定。
 - `npm run check:encoding`: passed.
-- Default E2E: `HIS_BASE_URL=http://10.26.6.8:31684 npm run test:e2e -- --reporter=list` -> `80 passed / 3 skipped / 0 failed`.
+- Default E2E: `HIS_BASE_URL=http://10.26.6.8:31451 npm run test:e2e -- --reporter=list` -> `80 passed / 3 skipped / 0 failed`.
 - `RUN_LLM_E2E=1`: full suite wait exceeded 5 minutes; focused `@llm` phone-update test failed because P001 phone remained `13810010001` instead of `13800138000` after 90s. Direct backend health probe returned `{"ok":true,"provider":"qwen","model":"qwen3-14b","content":"ok"}` in `0.14s`.
 - Loop: P0 `iteration-050` -> `8 / 0 / 0`; P1 `iteration-051` -> `14 / 0 / 0`; full evaluate `iteration-052` -> `29 / 0 / 0`.

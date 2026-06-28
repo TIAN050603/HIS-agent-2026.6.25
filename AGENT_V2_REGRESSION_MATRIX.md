@@ -126,7 +126,7 @@ http://10.26.6.8:31210/html/login.html?v=20260625-loop-gate
 
 | 范围 | 用例 | 结果 |
 | --- | --- | --- |
-| Port mapping | frontend/backend/ASR/LLM/Jupyter/SSH 使用最新映射 | passed，`31684 / 30663 / 30410 / 31756 / 46121 / 30855` |
+| Port mapping | frontend/backend/ASR/LLM/Jupyter/SSH 使用最新映射 | passed，`31451 / 31169 / 30197 / 31034 / 49676 / 30855` |
 | Backend LLM JSON | planner 首次返回非法 JSON 时由后端 LLM 修复一次 | passed，live `task-plan` 调用返回 `ok:true` |
 | P2 loop | 消息可见、用户滚动、未读提示、home view 不被 progress 抢占、展开步骤滚动、history 字段 | passed，iteration-037 `7 / 0 / 0` |
 | Full loop | P0 + P1 + P2 | passed，iteration-038 `29 / 0 / 0` |
@@ -136,5 +136,5 @@ http://10.26.6.8:31210/html/login.html?v=20260625-loop-gate
 
 强制刷新：
 ```text
-http://10.26.6.8:31684/html/login.html?v=20260625-final-loop
+http://10.26.6.8:31451/html/login.html?v=20260625-final-loop
 ```

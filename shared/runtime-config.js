@@ -3,10 +3,10 @@
 
   const DEFAULT_HOST = "10.26.6.8";
   const DEFAULT_PORTS = {
-    frontend: "31684",
-    backend: "30663",
-    asr: "30410",
-    llm: "31756",
+    frontend: "31451",
+    backend: "31169",
+    asr: "30197",
+    llm: "31034",
     diarization: "8020"
   };
 

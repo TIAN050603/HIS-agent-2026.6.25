@@ -45,8 +45,8 @@ Full all-patient all-field mutation execution is intentionally not claimed compl
 
 ## 2026-06-25 Final Loop Convergence
 
-- Current public mapping: frontend `5500->31684`, backend `8000->30663`, ASR `8010->30410`, LLM service `8001->31756`, Jupyter `8888->46121`, SSH `22->30855`.
-- Current base URL: `http://10.26.6.8:31684`.
+- Current public mapping: frontend `5500->31451`, backend `8000->31169`, ASR `8010->30197`, LLM service `8001->31034`, Jupyter `8888->49676`, SSH `22->30855`.
+- Current base URL: `http://10.26.6.8:31451`.
 - `call_qwen_json` now performs one backend-LLM JSON repair retry when the first backend response is invalid JSON. This is not a local keyword fallback; the repair request still goes through the configured backend LLM and the normal schema validation path.
 - P2 skipped cases were automated: latest output visibility, user-scroll preservation, new-message prompt, home-view progress isolation, expanded-step scroll stability, and rich agent-history fields.
 - Scroll manager `force` now explicitly keeps auto-follow enabled and repeats bottom alignment across layout frames so new task output remains visible when the user is already at the bottom.
@@ -54,7 +54,7 @@ Full all-patient all-field mutation execution is intentionally not claimed compl
 - Full loop iteration 038: `29 / 0 / 0`.
 - Default E2E: `73 / 0 / 3`.
 - RUN_LLM_E2E: `75 / 0 / 1`; both live `@llm` mutation cases executed and passed. The remaining skipped case is optional fake microphone.
-- Forced refresh URL: `http://10.26.6.8:31684/html/login.html?v=20260625-final-loop`.
+- Forced refresh URL: `http://10.26.6.8:31451/html/login.html?v=20260625-final-loop`.
 
 ## 2026-06-25 Task Telemetry Panel Final Evidence
 
@@ -63,7 +63,7 @@ Full all-patient all-field mutation execution is intentionally not claimed compl
 - Default E2E after the final scroll-manager fix: `76 / 0 / 3`.
 - RUN_LLM_E2E latest full run after the final scroll-manager fix: `77 / 1 / 1`; the live gender-update case failed because the real LLM run did not produce the expected page mutation within 90000ms. A follow-up `--grep @llm` run skipped both live cases through the real LLM availability gate.
 - Scroll manager now treats user-scrolled-away as a hard boundary for delayed automatic bottom-follow callbacks. User-clicked unread prompt can still scroll to the bottom.
-- Forced refresh URL: `http://10.26.6.8:31684/html/login.html?v=20260625-task-telemetry-panel`.
+- Forced refresh URL: `http://10.26.6.8:31451/html/login.html?v=20260625-task-telemetry-panel`.
 ## 2026-06-25 Final Timer Loop Evidence
 
 - P0 loop: `iteration-050`, `8 passed / 0 failed / 0 skipped`.

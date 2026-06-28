@@ -1,5 +1,21 @@
 ﻿# Project Backlog
 
+## Fixed - 2026-06-26 悬浮框计时采样与任务演示节奏
+
+Fixed:
+- 悬浮框当前任务耗时改为 0.1s 采样，planning 阶段也实时刷新。
+- 100ms tick 只更新耗时文本，任务卡结构低频重绘，避免“展开步骤”点击或滚动时 DOM 被替换。
+- 正式任务总耗时不再把执行前 LLM 状态预检计入起点，减少所有任务被同一段预检耗时抬高的错觉。
+- Demo pacing 默认开启 1s step/action 间隔，成功页面动作后会等待，便于观察字段修改、保存、页面跳转反馈。
+- E2E 使用 `demoPacing=0` session 覆盖关闭演示节奏；真实页面默认不带该参数。
+
+Verification:
+- `npm run check:encoding`: passed.
+- `node --check shared/agent-widget.js`: passed.
+- `node --check shared/agent-task-orchestrator.js`: passed.
+- Targeted E2E passed: planning timer, demo pacing, expanded step scroll.
+- Default E2E: 82 passed / 3 skipped.
+
 ## Fixed - 2026-06-25 语音整理任务可写入既往病史
 
 Fixed:
@@ -15,8 +31,8 @@ Verification:
 
 Final verification:
 - `npm run check:encoding`: passed.
-- Default E2E on `http://10.26.6.8:31684`: 73 passed / 3 skipped.
-- RUN_LLM_E2E on `http://10.26.6.8:31684`: 75 passed / 1 skipped.
+- Default E2E on `http://10.26.6.8:31451`: 73 passed / 3 skipped.
+- RUN_LLM_E2E on `http://10.26.6.8:31451`: 75 passed / 1 skipped.
 - Loop P0: 8 passed / 0 failed.
 - Loop P1: 14 passed / 0 failed.
 
@@ -565,7 +581,7 @@ Open:
 - verified: full loop iteration-038 `29 / 0 / 0`.
 - verified: default E2E `73 / 0 / 3`.
 - verified: RUN_LLM_E2E `75 / 0 / 1`.
-- current forced refresh URL: `http://10.26.6.8:31684/html/login.html?v=20260625-final-loop`.
+- current forced refresh URL: `http://10.26.6.8:31451/html/login.html?v=20260625-final-loop`.
 - open: optional fake microphone `@mic` remains environment-dependent.
 - open: full 500-cell patient-field mutation execution remains a separate mutation-mode gate, not claimed by this pass.
 
@@ -577,7 +593,7 @@ Open:
 - fixed: agent-history 对旧任务显示 `未记录`，对本地 DOM 步骤显示 `本地执行`，对 backend usage 显示真实 token。
 - verified: full loop iteration-049 `29 / 0 / 0`; default E2E `76 / 0 / 3`; `npm run check:encoding` passed; performance baseline source iteration-049.
 - observed: latest full `RUN_LLM_E2E=1` was `77 / 1 / 1`; the live Zhang Wei gender update did not mutate the page to `女` within timeout, and a follow-up `@llm` targeted run was skipped by real LLM availability gate.
-- current forced refresh URL: `http://10.26.6.8:31684/html/login.html?v=20260625-task-telemetry-panel`.
+- current forced refresh URL: `http://10.26.6.8:31451/html/login.html?v=20260625-task-telemetry-panel`.
 ## Fixed - 2026-06-25 任务计时、Demo 节奏和步骤滚动
 
 Fixed:
@@ -599,7 +615,7 @@ Fixed:
 
 Verification:
 - `npm run check:encoding`: passed.
-- Default E2E on `http://10.26.6.8:31684`: `80 passed / 3 skipped / 0 failed`.
+- Default E2E on `http://10.26.6.8:31451`: `80 passed / 3 skipped / 0 failed`.
 - Loop P0/P1/full: `iteration-050` `8 / 0 / 0`, `iteration-051` `14 / 0 / 0`, `iteration-052` `29 / 0 / 0`.
 
 Open:

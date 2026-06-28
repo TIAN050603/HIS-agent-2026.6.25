@@ -2,14 +2,14 @@
 
 ## 2026-06-25 Final Runtime Evidence
 
-- Default E2E: `80 passed / 3 skipped / 0 failed` on `http://10.26.6.8:31684`.
+- Default E2E: `80 passed / 3 skipped / 0 failed` on `http://10.26.6.8:31451`.
 - Loop evaluate after the final timer patch: `iteration-052`, score `100`, `29 passed / 0 failed / 0 skipped`.
 - P0/P1 focused loops: `iteration-050` (`8 / 0 / 0`) and `iteration-051` (`14 / 0 / 0`).
 - Live LLM health probe was fast (`0.14s`, `qwen3-14b ok`), but the focused live `@llm` phone mutation test failed to update P001 within 90s; treat this as live LLM/taskflow evidence, not as timer or scroll performance evidence.
 
 ## 2026-06-25 Timer And Demo Pacing Baseline
 
-- Targeted UI telemetry regression on `http://10.26.6.8:31684`: 4 passed.
+- Targeted UI telemetry regression on `http://10.26.6.8:31451`: 4 passed.
 - Running task timer now refreshes in the widget at 250ms cadence and displays one-decimal seconds for sub-minute values.
 - Demo pacing defaults to disabled. When `window.__HIS_AGENT_DEMO_PACING__` or `localStorage.his_agent_demo_pacing` enables it, field/click delay is counted in `demo_delay_ms`; E2E fast mode (`window.__HIS_AGENT_FAST_ANIMATION__ = true`) disables the delay.
 - Page-switch scroll restoration uses `behavior: "auto"` and hides the chat body only for the first restore frame, avoiding the visible top-to-bottom glide.
@@ -17,7 +17,7 @@
 Generated at: 2026-06-25T08:34:36.828Z
 Source iteration: iteration-049
 Source run ID: evaluate-20260625T081847Z
-Base URL: http://10.26.6.8:31684
+Base URL: http://10.26.6.8:31451
 
 ## Summary
 

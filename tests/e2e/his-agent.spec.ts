@@ -9,7 +9,7 @@ const pages = [
 ];
 
 const mojibakePattern = /\?{2,}|Ã|å|é|è|鐩|婚|榇|淇|鍖|閿|閻|脙|�|锟/;
-const localServiceQuery = "backendUrl=http%3A%2F%2F127.0.0.1%3A8000&asrUrl=http%3A%2F%2F127.0.0.1%3A8010&diarizationUrl=http%3A%2F%2F127.0.0.1%3A8000";
+const localServiceQuery = "backendUrl=http%3A%2F%2F127.0.0.1%3A8000&asrUrl=http%3A%2F%2F127.0.0.1%3A8010&diarizationUrl=http%3A%2F%2F127.0.0.1%3A8000&demoPacing=0";
 
 async function expectNoMojibake(page) {
   await expect(page.locator("body")).not.toContainText(mojibakePattern);
@@ -294,8 +294,8 @@ async function browserFetchLlmTest(page) {
     const backendUrl = window.__HIS_AGENT_WIDGET_DEBUG__?.backendUrl ||
       document.querySelector("#hisAgentBackendUrl")?.value ||
       window.HisRuntimeConfig?.serviceUrls?.().backendUrl ||
-      "http://10.26.6.8:30663";
-    const base = String(backendUrl || "http://10.26.6.8:30663").replace(/\/+$/, "");
+      "http://10.26.6.8:31169";
+    const base = String(backendUrl || "http://10.26.6.8:31169").replace(/\/+$/, "");
     const startedAt = Date.now();
     const controller = new AbortController();
     const timer = window.setTimeout(() => controller.abort(), 20_000);
@@ -2637,6 +2637,47 @@ test.describe("activeTask lifecycle", () => {
 });
 
 test.describe("Agent state close-loop regressions", () => {
+  test("planning timer refreshes at tenth-second cadence while LLM preflight is pending", async ({ page }) => {
+    await page.route(/\/api\/llm\/test$/, async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ok: true, provider: "e2e", model: "mock-llm", content: "ok" })
+      });
+    });
+    await page.route(/\/api\/universal-agent\/task-plan$/, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          ok: true,
+          response: {
+            kind: "task",
+            task: {
+              task_id: "e2e_planning_timer_task",
+              objective: "验证 planning 计时",
+              status: "running",
+              source: "backend_llm",
+              plan: [{ id: "step_noop", goal: "完成验证", actionType: "noop", source: "backend_llm", status: "pending" }]
+            }
+          }
+        })
+      });
+    });
+    await page.goto("/html/login.html?v=e2e-planning-live-timer&" + localServiceQuery);
+    await openAgent(page);
+    await page.locator("#hisAgentOpenChatButton").click();
+    await page.locator("#hisAgentInput").fill("验证 planning 计时");
+    await page.locator("#hisAgentSendButton").click();
+    const readPlanningElapsed = async () => {
+      const text = await page.locator("#hisAgentCurrentTaskCard .his-agent-current-meta").textContent();
+      const match = String(text || "").match(/耗时：([0-9.]+)s/);
+      return match ? Number(match[1]) : 0;
+    };
+    await expect.poll(readPlanningElapsed, { timeout: 900 }).toBeGreaterThanOrEqual(0.2);
+  });
+
   test("running task and step timers increment live then freeze after completion", async ({ page }) => {
     await page.goto("/html/login.html?v=e2e-live-task-timer&" + localServiceQuery);
     await page.evaluate(() => {
@@ -2817,6 +2858,31 @@ test.describe("Agent state close-loop regressions", () => {
     expect(Date.now() - started).toBeLessThan(2200);
     const history = await page.evaluate(() => JSON.parse(localStorage.getItem("hisAgentTaskHistory") || "[]").find((item) => item.task_id === "e2e_fast_pacing_task"));
     expect(history?.timing?.demo_delay_ms || 0).toBe(0);
+  });
+
+  test("demo pacing records a configured step delay after successful page actions", async ({ page }) => {
+    await page.goto("/html/login.html?v=e2e-demo-pacing-step-delay&demoPacing=1");
+    const result = await page.evaluate(async () => {
+      localStorage.setItem("his_agent_demo_pacing", JSON.stringify({ enabled: true, stepDelayMs: 120, fieldDelayMs: 0, clickDelayMs: 0 }));
+      const task = {
+        task_id: "e2e_demo_pacing_step_delay",
+        objective: "验证步骤间隔计入 timing",
+        source: "backend_llm",
+        plan: [
+          { id: "step_fill_login", goal: "填写登录表单", requiredPage: "login", actionType: "fill_login_form", args: { username: "123", password: "123" }, source: "backend_llm" }
+        ]
+      };
+      const run = await window.AgentTaskOrchestrator.executePlannedTask(task, { backendUrl: "http://127.0.0.1:8000" });
+      const history = JSON.parse(localStorage.getItem("hisAgentTaskHistory") || "[]");
+      return {
+        run,
+        task: history.find((item) => item.task_id === "e2e_demo_pacing_step_delay")
+      };
+    });
+    expect(result.run?.success).toBe(true);
+    expect(result.task?.status).toBe("completed");
+    expect(result.task?.timing?.demo_delay_ms || 0).toBeGreaterThanOrEqual(100);
+    expect(result.task?.elapsed_ms || 0).toBeGreaterThanOrEqual(100);
   });
 
   test("minimized task plan survives progress refresh and reopens from chat header", async ({ page }) => {

@@ -2,7 +2,7 @@
 
 ## 2026-06-25 Final Verification Addendum
 
-- Final default E2E on `http://10.26.6.8:31684`: `80 passed / 3 skipped / 0 failed`.
+- Final default E2E on `http://10.26.6.8:31451`: `80 passed / 3 skipped / 0 failed`.
 - `RUN_LLM_E2E=1` full suite was attempted but the command wait exceeded 5 minutes. A focused live `@llm` phone-update case then failed because P001 phone stayed `13810010001` instead of `13800138000` after 90s; backend `/api/llm/test` itself returned `qwen3-14b ok` in `0.14s`.
 - Loop evidence after the timer/step-scroll fix: P0 `iteration-050` = `8 / 0 / 0`, P1 `iteration-051` = `14 / 0 / 0`, full evaluate `iteration-052` = `29 / 0 / 0`.
 - `npm run check:encoding`: passed after the final timing bucket patch.
@@ -63,4 +63,4 @@ Telemetry must support a postcondition-based verdict. `click dispatched`, HTTP 2
 - Token source is explicit: backend LLM usage shows real totals; deterministic DOM steps show `本地执行`; missing usage shows `未返回`.
 - Default E2E after the final scroll fix: `76 / 0 / 3`.
 - RUN_LLM_E2E latest full run after the final scroll fix: `77 / 1 / 1`; the failing live case was `updates Zhang Wei gender without patient not found @llm`, where the real LLM run did not update gender to `女` within the timeout. A follow-up `--grep @llm` run was skipped by the real LLM availability gate.
-- Current public URL: `http://10.26.6.8:31684/html/login.html?v=20260625-task-telemetry-panel`.
+- Current public URL: `http://10.26.6.8:31451/html/login.html?v=20260625-task-telemetry-panel`.

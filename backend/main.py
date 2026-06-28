@@ -29,10 +29,10 @@ DEFAULT_CORS_ALLOWED_ORIGINS = [
     "http://localhost:5500",
     "http://127.0.0.1:8000",
     "http://localhost:8000",
-    "http://10.26.6.8:31210",
-    "http://10.26.6.8:30921",
-    "http://10.26.6.8:31238",
-    "http://10.26.6.8:31968",
+    "http://10.26.6.8:31451",
+    "http://10.26.6.8:31169",
+    "http://10.26.6.8:30197",
+    "http://10.26.6.8:31034",
 ]
 
 DEFAULT_CORS_ALLOW_ORIGIN_REGEX = r"^https?://(localhost|127\.0\.0\.1|10\.26\.6\.8):[0-9]+$"
